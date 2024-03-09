@@ -1,0 +1,27 @@
+/* Video em background da página index (página index.html) */
+.video-container {
+    z-index: 0;
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+  #background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+  }
+  /* Overlay para aproximar a cor do vídeo com a palete de cores */
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--overlay);
+  }
