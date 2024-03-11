@@ -1,15 +1,15 @@
 import './RegisterContainer.css';
 import './LandingPage.css';
-import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LandingPage from './LandingPage';
 
 function registerContainer() {
 
-    const [showLandingPage, setShowLandingPage] = useState(false);
+    const navigate = useNavigate();
 
-    if (showLandingPage) {
-        return <LandingPage />;
-    }
+    const handleCancelClick = () => {
+        navigate('/');
+    };
 
 
   return (
@@ -33,7 +33,7 @@ function registerContainer() {
                     <button type="submit" id="registerButton-register">Register</button>
                 </div>
             </form>
-            <a id="backToLoginLink" onClick={() => setShowLandingPage(true)}>Login</a>
+            <a id="backToLoginLink" onClick={handleCancelClick}>Cancel</a>
             <p id="warningMessage4"></p>
         </div>
     </div>
