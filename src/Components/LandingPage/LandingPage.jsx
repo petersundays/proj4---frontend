@@ -6,7 +6,7 @@ function LandingPage() {
     return (
         <>
 
-                 {loginContainer()}
+            {loginContainer()}
             
         </>
     );

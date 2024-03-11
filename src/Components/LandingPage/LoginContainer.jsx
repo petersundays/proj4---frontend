@@ -16,7 +16,7 @@ function LoginContainer() {
 
 
     const handleInputChange = (e) => {
-        const { name, value } = event.target;
+        const { name, value } = e.target;
         setInput(prevState => ({
             ...prevState,
             [name]: value
@@ -41,7 +41,7 @@ function LoginContainer() {
             if (response.ok) {
                 const token = await response.text();
                 localStorage.setItem('token', token);
-                //navigate('/myScrum');
+                navigate('/myscrum');
                 console.log('Login successful');
             } else if (response.status === 401) {
                 alert("Invalid credentials, please try again :(");
@@ -61,7 +61,7 @@ function LoginContainer() {
                 <img src="src\multimedia\logo-scrum-05.png" id="landingPage-image" />
             </div>
             <div className="loginpanel">
-                <h1 id="logo-login" width="250">WELCOME!</h1>
+                <h1 id="landingPage-welcome" width="250">WELCOME!</h1>
                 <div className='landingPage-spaceBetween'></div>
                 <h2 id="loginText">Sign In</h2>
                 <form id="login-form" className="input-login">
