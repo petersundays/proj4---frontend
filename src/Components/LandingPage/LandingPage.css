@@ -35,7 +35,7 @@
     justify-content: center;
     height: 100vh;
     opacity: 0;
-    animation: fadeIn 1s ease-in-out 0.5s forwards;
+    animation: fadeIn 0.5s ease-in-out 0.5s forwards;
   }
 
   .loginpanel {
@@ -49,7 +49,7 @@
     height: 94vh;
     width: 330px;
     opacity: 0;
-    animation: fadeIn 1s ease-in-out 0.5s forwards;
+    animation: fadeIn 0.5s ease-in-out 0.5s forwards;
   }
 
   @keyframes fadeIn {
@@ -65,10 +65,8 @@
     display: flex;
     justify-content: space-between;
   }
-  #logo-login,
-  #logo-register {
+  #landingPage-welcome{
     margin-block: 20px;
-    max-width: 250px;
     width: auto;
   }
   #logo-register {
