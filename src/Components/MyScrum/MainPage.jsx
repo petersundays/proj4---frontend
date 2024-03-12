@@ -8,7 +8,7 @@ function MainPage() {
     return (
         <>
             <BaseHeader/>
-            <div class="container"> 
+            <div className="container"> 
                 <AsideAddTask/>
                 <HomeMainContainer/>
             </div>

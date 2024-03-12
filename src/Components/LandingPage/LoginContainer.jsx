@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, Zoom, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { UserStore } from '../../Stores/UserStore';
+import Button from '../General/Button';
+
 
 function LoginContainer() {
 
@@ -41,8 +46,8 @@ function LoginContainer() {
             if (response.ok) {
                 const token = await response.text();
                 localStorage.setItem('token', token);
+                toast.success('Welcome to MyScrum!', {type: "success", theme: "colored", position: "top-center", transition: Zoom, autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: true}); 
                 navigate('/myscrum');
-                console.log('Login successful');
             } else if (response.status === 401) {
                 alert("Invalid credentials, please try again :(");
             } else {
@@ -67,8 +72,8 @@ function LoginContainer() {
                 <form id="login-form" className="input-login">
                     <input type="text" id="username" name="username" placeholder="username" value={input.username} onChange={handleInputChange} required />
                     <input type="password" id="password" name="password" placeholder="password" value={input.password} onChange={handleInputChange} required />
-                    <button type="button" id="loginButton" onClick={handleLoginSubmit}>Confirm</button>
-                    <button id="registerButton" onClick={handleRegisterClick}>Sign Up</button>
+                    <Button onClick={handleLoginSubmit} width="150px" text="Confirm"></Button>
+                    <Button id="registerButton" onClick={handleRegisterClick} width="150px" text="Register"></Button>
                 </form>
                 <p id="warningMessage"></p>
             </div>

@@ -43,16 +43,13 @@ main {
     scrollbar-color: var(--green2) var(--white);
   }
   /* Cor de fundo de cada painel */
-  #todo,
-  #strengths {
+  #todo {
     background-color: var(--todo);
   }
-  #doing,
-  #challenges {
+  #doing {
     background-color: var(--doing);
   }
-  #done,
-  #improvements {
+  #done {
     background-color: var(--done);
   }
   /* Estilos da scroll bar (painéis da home.html e da task no task.html) */
