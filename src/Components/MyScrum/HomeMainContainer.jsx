@@ -5,6 +5,7 @@ function HomeMainContainer() {
   return (
     
     <>
+        <main>
             <div className="titulo-main">
                 <h2 className="main-home">To do</h2>
                 <div className="panel" id="todo">
@@ -20,7 +21,7 @@ function HomeMainContainer() {
                 <div className="panel" id="done">
                 </div>
             </div>
-        
+        </main>
     </>
     );
 }
