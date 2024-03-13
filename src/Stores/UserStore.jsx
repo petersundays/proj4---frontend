@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJsonStorage } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export const UserStore = create(
     persist(
@@ -10,8 +10,9 @@ export const UserStore = create(
                 firstName: '',
                 lastName: '',
                 phone: '',
-                photoUrl: '',
-                typeOfUser: ''
+                photoURL: '',
+                typeOfUser: '',
+                token: '',
             },
             updateUser: (updatedUser) => {
                 set((state) => ({
@@ -21,14 +22,15 @@ export const UserStore = create(
                         firstName: updatedUser.firstName || state.user.firstName,
                         lastName: updatedUser.lastName || state.user.lastName,
                         phone: updatedUser.phone || state.user.phone,
-                        photoUrl: updatedUser.photoUrl || state.user.photoUrl,
+                        photoURL: updatedUser.photoURL || state.user.photoURL,
                     },
                 }));
             },
         }),
         {
             name: 'user-storage',
-            getStorage: () => createJsonStorage(() => sessionStorage),
+            getStorage: () => createJSONStorage(() => sessionStorage),
+            logout: (set) => () => set({ user: {} }),
         }
     )
 );

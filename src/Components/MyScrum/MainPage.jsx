@@ -3,6 +3,8 @@ import './MainPage.css';
 import AsideAddTask from './AsideAddTask';
 import HomeMainContainer from './HomeMainContainer';
 import BaseHeader from './baseHeader';
+import Footer from './Footer';
+
 
 function MainPage() {
     return (
@@ -12,6 +14,7 @@ function MainPage() {
                 <AsideAddTask/>
                 <HomeMainContainer/>
             </div>
+            <Footer/>
         </>
     )
 }

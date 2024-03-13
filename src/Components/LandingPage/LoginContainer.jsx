@@ -44,8 +44,8 @@ function LoginContainer() {
             });
 
             if (response.ok) {
-                const token = await response.text();
-                localStorage.setItem('token', token);
+                const user = await response.json();
+                UserStore.setState({ user: user });
                 toast.success('Welcome to MyScrum!', {type: "success", theme: "colored", position: "top-center", transition: Zoom, autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: true}); 
                 navigate('/myscrum');
             } else if (response.status === 401) {
