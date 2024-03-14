@@ -94,5 +94,5 @@ header {
     color: var(--green2);
   }
   .logout-button:hover img {
-    content: url("multimedia/logout_hover.png");
+    content: url("/multimedia/logout_hover.png");
   }

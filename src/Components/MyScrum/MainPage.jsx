@@ -6,14 +6,16 @@ import HomeMainContainer from "./HomeMainContainer";
 import BaseHeader from "./baseHeader";
 import Footer from "./Footer";
 import EditProfile from "./EditProfile/EditProfile";
+import AsideEditProfile from "./AsideEditProfile";
 
 function MainPage() {
     return (
         <>
             <BaseHeader />
             <div className="container" id="container">
-                <AsideAddTask />
-                <Routes>
+<AsideEditProfile />
+{/*                 <AsideAddTask />
+ */}                <Routes>
                     <Route path="/" element={<HomeMainContainer />} />
                     <Route path="edit-profile" element={<EditProfile />} />
                 </Routes>

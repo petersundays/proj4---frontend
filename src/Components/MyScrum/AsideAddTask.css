@@ -2,6 +2,7 @@
   /* Definições da barra lateral aside */
   aside {
     max-width: 300px;
+    min-width: 250px;
     height: 720px;
     float: left;
     background-color: var(--light-grey);
@@ -104,4 +105,21 @@
   #addTask:hover {
     background-color: var(--green3);
     color: var(--green1);
+  }
+
+  #username-title-aside {
+    color: var(--green3);
+    font-size: 20px;
+    font-weight: bold;
+    align-self: center;
+    text-transform: uppercase;
+    margin-top: 100px;
+  }
+
+  #edit-profile-pic-aside {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 100px;
   }
