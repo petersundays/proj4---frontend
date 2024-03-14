@@ -45,7 +45,7 @@
     text-align: center;
     color: var(--green3);
     background-color: color-mix(in srgb, var(--light-grey), transparent 10%);
-    border-radius: 10px;
+    border-radius: 10px 0 0 10px;
     height: 94vh;
     width: 330px;
     opacity: 0;

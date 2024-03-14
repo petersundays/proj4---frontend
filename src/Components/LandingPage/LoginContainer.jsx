@@ -46,8 +46,8 @@ function LoginContainer() {
             if (response.ok) {
                 const user = await response.json();
                 UserStore.setState({ user: user });
-                toast.success('Welcome to MyScrum!', {type: "success", theme: "colored", position: "top-center", transition: Zoom, autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: true}); 
-                navigate('/myscrum');
+                toast.success('Welcome to Agile Scrum!', {type: "success", theme: "colored", position: "top-center", transition: Zoom, autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: true}); 
+                navigate('/my-scrum');
             } else if (response.status === 401) {
                 alert("Invalid credentials, please try again :(");
             } else {

@@ -1,30 +1,6 @@
-main {
-    width: calc(100% - 300px);
-    height: 720px;
-    background-color: var(--white);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-  /* Definições do main home.html */
-  .titulo-main,
-  .titulo-retro {
-    flex: 1;
-  }
-  .main-home,
-  .sci-title {
-    text-align: center;
-    color: var(--green3);
-    text-transform: uppercase;
-    font-size: 20px;
-    padding-top: 40px;
-    padding-bottom: 10px;
-  }
-  /* Definições gerais dos painéis To do, Doing e Done & strengths, Challenges e Improvements */
-  .panel,
-  .panel-strengths,
-  .panel-challenges,
-  .panel-improvements {
+
+  /* Definições gerais dos painéis To do, Doing e Done */
+  .panel{
     flex: 1;
     height: 500px;
     border-top-left-radius: 10px;
@@ -55,19 +31,13 @@ main {
   /* Estilos da scroll bar (painéis da home.html e da task no task.html) */
   /* Tamanho da barra */
   .panel::-webkit-scrollbar,
-  .text-task::-webkit-scrollbar,
-  .panel-strengths::-webkit-scrollbar,
-  .panel-challenges::-webkit-scrollbar,
-  .panel-improvements::-webkit-scrollbar,
+  .text-task::-webkit-scrollbar
   .table-container::-webkit-scrollbar {
     width: 13px;
   }
   /* Cor da barra */
   .panel::-webkit-scrollbar-thumb,
   .text-task::-webkit-scrollbar-thumb,
-  .panel-strengths::-webkit-scrollbar-thumb,
-  .panel-challenges::-webkit-scrollbar-thumb,
-  .panel-improvements::-webkit-scrollbar-thumb,
   .table-container::-webkit-scrollbar-thumb {
     background-color: var(--green2);
     border-top-right-radius: 8px;
@@ -76,9 +46,6 @@ main {
   match ao arredondamento do painel (home.html) */
   .panel::-webkit-scrollbar-track,
   .text-task::-webkit-scrollbar-track,
-  .panel-strengths::-webkit-scrollbar-track,
-  .panel-challenges::-webkit-scrollbar-track,
-  .panel-improvements::-webkit-scrollbar-track,
   .table-container::-webkit-scrollbar-track {
     margin-right: 1px;
     background-color: var(--white);
@@ -87,9 +54,6 @@ main {
   /* Altura da scroll bar */
   .panel::-webkit-scrollbar,
   .text-task::-webkit-scrollbar,
-  .panel-strengths::-webkit-scrollbar,
-  .panel-challenges::-webkit-scrollbar,
-  .panel-improvements::-webkit-scrollbar,
   .table-container::-webkit-scrollbar {
     height: calc(100% - 2px);
     padding-right: 1px;
