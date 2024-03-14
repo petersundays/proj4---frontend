@@ -1,13 +1,9 @@
 import React from 'react';
-import { ReactDOM } from 'react-dom';
-import { Link, Route, Routes } from "react-router-dom";
+import { Link } from "react-router-dom";
 import './baseHeader.css';
 import { UserStore } from '../../Stores/UserStore';
 import { useNavigate } from 'react-router-dom';
-import { render } from 'react-dom';
-import EditProfile from '../MyScrum/EditProfile/EditProfile';
-import MainPage from './MainPage';
-import HomeMainContainer from './HomeMainContainer';
+
 
 
 function BaseHeader() {
@@ -33,14 +29,11 @@ function BaseHeader() {
         navigate('/');
     };
 
-    const renderEditProfile = () => {
-        navigate('/edit-profile');
-      };
 
     return (
         <>
             <header>
-                <img src="./multimedia/logo-scrum-05.png" id="logo-header" height="50" draggable="false"/>
+                <img src='/multimedia/logo-scrum-05.png' id="logo-header" height="50" draggable="false"/>
                 <nav className="nav-menu-left">
                     <ul id="menu">
                         <li id="nav-home"><Link to="/my-scrum" draggable="false">My Scrum</Link></li>
@@ -51,7 +44,7 @@ function BaseHeader() {
                     <img src={photoURL} id="profile-pic" draggable="false"/>
                     <Link to="/my-scrum/edit-profile" id="first-name-label" draggable="false" >{firstName}</Link>
                     <button className="logout-button" id="logout-button-header" onClick={handleLogout}>
-                        <img src="multimedia/logout.png" alt="Logout Icon" draggable="false"/>
+                        <img src="/multimedia/logout.png" alt="Logout Icon" draggable="false"/>
                         Logout
                     </button>
                 </div>
