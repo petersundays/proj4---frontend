@@ -1,4 +1,4 @@
-import './AsideAddTask.css';
+import './Asides.css';
 import React from 'react';
 import PriorityButtons from '../General/PriorityButtons.jsx';
 import Button from '../General/Button.jsx';

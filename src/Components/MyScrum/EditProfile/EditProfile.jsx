@@ -2,6 +2,7 @@ import React from 'react';
 import './EditProfile.css';
 import Button from '../../General/Button';
 import { UserStore } from '../../../Stores/UserStore';
+import AsideEditProfile from './AsideEditProfile';
 
 
 function EditProfile() {
@@ -17,6 +18,7 @@ function EditProfile() {
 
     return (
         <>
+            <AsideEditProfile />
             <div id="cancel-modal" className="modal">
                 <div className="modal-content">
                     <p>Cancel changes?</p>

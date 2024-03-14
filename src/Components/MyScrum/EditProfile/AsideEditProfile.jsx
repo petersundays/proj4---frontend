@@ -1,6 +1,6 @@
-import './AsideAddTask.css';
+import '../Asides.css';
 import React from 'react';
-import { UserStore } from '../../Stores/UserStore';
+import { UserStore } from '../../../Stores/UserStore';
 
 function AsideEditProfile() {
     const username = UserStore.getState().user.username;
