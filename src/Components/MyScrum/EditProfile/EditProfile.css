@@ -1,12 +1,9 @@
 
 .main-editProfile {
-    width: auto;
     background-image: url("/multimedia/bg_01.png");
     background-size: cover;
-    background-position: center;
+    background-position: bottom;
     background-repeat: no-repeat;
-
-    
   }
 
   #username-title-editProfile {
@@ -25,9 +22,9 @@
   .editProfile-fieldsContainer {
     display: flex;
     justify-content: space-between;
+    margin-top: 100px;
   }
-  .left-fields-editProfile,
-  .right-fields-editProfile {
+  .left-fields-editProfile {
     display: flex;
     flex-direction: column;
     padding-top: 20px;
@@ -56,10 +53,10 @@
   }
   .editProfile-Buttons {
     margin-top: 50px;
-    margin-left: 6px;
+    margin-left: 10px;
     display: flex;
     justify-content: flex-start;
-    gap: 40px;
+    gap: 20px;
     text-transform: uppercase;
     font-size: 12px;
     font-weight: bold;
@@ -89,7 +86,7 @@
   }
   
 
-  #profile-save-button,
+  /* #profile-save-button,
   #profile-cancel-button,
   #profile-changePass-button,
   #profile_savePass {
@@ -125,7 +122,7 @@
     background-color: var(--green1);
     color: var(--black);
     border-color: var(--black);
-  }
+  } */
   
 
   .modal {

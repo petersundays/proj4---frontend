@@ -1,8 +1,6 @@
-/* Definições do container que inclui o aside e o main da página home.html */
   /* Definições da barra lateral aside */
   aside {
-    max-width: 300px;
-    min-width: 250px;
+    width: 300px;
     height: 720px;
     float: left;
     background-color: var(--light-grey);
