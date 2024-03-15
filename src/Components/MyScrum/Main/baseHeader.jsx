@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import './baseHeader.css';
-import { UserStore } from '../../Stores/UserStore';
+import { UserStore } from '../../../Stores/UserStore';
 import { useNavigate } from 'react-router-dom';
 
 

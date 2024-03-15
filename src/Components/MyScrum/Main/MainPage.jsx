@@ -1,12 +1,10 @@
 import React from "react";
 import { Route, Routes } from 'react-router-dom';
 import "./MainPage.css";
-import AsideAddTask from "./AsideAddTask";
-import TasksContainer from "./TasksContainer";
+import TasksContainer from "../Tasks/TasksContainer";
 import BaseHeader from "./baseHeader";
 import Footer from "./Footer";
-import EditProfile from "./EditProfile/EditProfile";
-import AsideEditProfile from "./EditProfile/AsideEditProfile";
+import EditProfile from "../EditProfile/EditProfile";
 
 function MainPage() {
     return (
