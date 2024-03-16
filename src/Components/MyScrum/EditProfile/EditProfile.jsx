@@ -131,7 +131,7 @@ function EditProfile() {
                     navigate('/my-scrum');
                 } else {
                     const error = await response.text();
-                    showErrorMessage('Error ELSE: ' + error);
+                    showErrorMessage('Error: ' + error);
                 }
             } catch (error) {
                 console.error('Error:', error);
