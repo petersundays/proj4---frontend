@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import "./MainPage.css";
-import TasksContainer from "../Tasks/TasksContainer";
-import BaseHeader from "./baseHeader";
-import Footer from "./Footer";
-import EditProfile from "../EditProfile/EditProfile";
-import AsideCategories from "../Categories/AsideCategories";
+import '../Components/MyScrum/Main/MainPage.css';
+import BaseHeader from '../Components/MyScrum/Main/baseHeader';
+import Footer from '../Components/MyScrum/Main/Footer';
+import CategoriesPage from './CategoriesPage';
+import MyScrumPage from './MyScrumPage';
+import EditProfilePage from './EditProfilePage';
 
 function MainPage() {
     return (
@@ -13,9 +13,9 @@ function MainPage() {
             <BaseHeader />
             <div className="container" id="container">
                 <Routes>
-                    <Route path="/" element={<TasksContainer />} />
-                    <Route path="edit-profile" element={<EditProfile />} />
-                    <Route path="categories" element={<AsideCategories />} />
+                    <Route path="/" element={< MyScrumPage />} />
+                    <Route path="edit-profile" element={<EditProfilePage />} />
+                    <Route path="categories" element={<CategoriesPage />} />
                 </Routes>
             </div>
             <Footer />

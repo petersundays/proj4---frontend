@@ -1,12 +1,9 @@
 import "./TasksContainer.css";
-import AsideAddTask from "./AsideAddTask";
-import AsideCategories from "../Categories/AsideCategories";
+
 
 function TasksContainer() {
   return (
     <>
-        <AsideAddTask />
-        <AsideCategories />
 
       <div className="titulo-main">
         <h2 className="main-home">To do</h2>
