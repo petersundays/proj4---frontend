@@ -1,8 +1,8 @@
 import { toast, Zoom } from 'react-toastify';
 
-export function showSuccessMessage(message) {
-    toast.success(message, {
-
+export function showInfoMessage(message) {
+    toast.info(message, {
+        
         theme: "colored",
         position: "top-center",
         transition: Zoom,

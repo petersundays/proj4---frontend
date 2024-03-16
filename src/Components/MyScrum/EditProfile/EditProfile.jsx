@@ -4,6 +4,9 @@ import './EditProfile.css';
 import { UserStore } from '../../../Stores/UserStore';
 import AsideEditProfile from './AsideEditProfile';
 import Button from '../../General/Button';
+import { showErrorMessage } from '../../../functions/Messages/ErrorMessage';
+import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage';
+import { showInfoMessage } from '../../../functions/Messages/InfoMessage';
 
 function EditProfile() {
     
@@ -14,11 +17,33 @@ function EditProfile() {
     const [photoURL, setPhotoURL] = useState(user.photoURL);
 
     const [displayPasswordModal, setDisplayPasswordModal] = useState(false);
+    const [passwordData, setPasswordData] = useState({
+        profile_oldPassword: '',
+        profile_newPassword: '',
+        profile_confirmPassword: ''
+    });
 
     const handlePasswordModal = () => {
+        clearPasswordFields();
         setDisplayPasswordModal(!displayPasswordModal);
     }; 
 
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPasswordData({ ...passwordData, [name]: value });
+    };
+
+    const handleCancelEdition = () => {
+        navigate('/my-scrum');
+    };
+
+    const clearPasswordFields = () => {
+        setPasswordData({
+            profile_oldPassword: '',
+            profile_newPassword: '',
+            profile_confirmPassword: ''
+        });
+    };
 
 
     const handlePhotoURLChangeOnAside = (event) => {
@@ -34,6 +59,7 @@ function EditProfile() {
         };
     };
     
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -43,6 +69,7 @@ function EditProfile() {
         handleInputChange(event);
         handlePhotoURLChangeOnAside(event);
     };
+
 
     const areInputsUnchanged = () => {
         return (
@@ -71,13 +98,14 @@ function EditProfile() {
             formData.photoURL = null;
         }
     };
+
           
 
-    const handleSubmit = async (e) => {
+    const handleSubmitProfileChanges = async (e) => {
         e.preventDefault();
 
         if (areInputsUnchanged()) {
-            alert('No changes were made');
+            showInfoMessage('No changes were made');
             navigate('/my-scrum');
         } else {
 
@@ -99,22 +127,65 @@ function EditProfile() {
                 if (response.ok) {
                     const user = await response.json();
                     UserStore.getState().updateUser(formData);
-                    alert('Profile updated successfully');
+                    showSuccessMessage('Profile updated successfully');
                     navigate('/my-scrum');
                 } else {
                     const error = await response.text();
-                    alert('Error ELSE: ' + error);
+                    showErrorMessage('Error ELSE: ' + error);
                 }
             } catch (error) {
-                console.error('Error CATCH:', error);
-                alert('Something went wrong. Please try again later.');
+                console.error('Error:', error);
+                showErrorMessage('Something went wrong. Please try again later.');
             }
         }
 
     };
 
-    const handleCancel = () => {
-        console.log('Cancel');
+    const handleSubmitPasswordChanges = async (e) => {
+        e.preventDefault();
+        const token = UserStore.getState().user.token;
+        const oldPassword = passwordData.profile_oldPassword;
+        const newPassword = passwordData.profile_newPassword;
+        const confirmPassword = passwordData.profile_confirmPassword;
+
+        const updateRequest = `http://localhost:8080/backend_proj4_war_exploded/rest/users/update/${user.username}/password`;
+
+        if (newPassword !== confirmPassword) {
+            showErrorMessage('Passwords do not match');
+            return;
+        } else if (oldPassword === newPassword) {
+            showErrorMessage('New password must be different from the old one');
+            return;
+        } else {
+
+            try {
+                const response = await fetch(updateRequest, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json', 
+                        'Accept': '*/*',
+                        token: token,
+                        oldPassword: oldPassword,
+                        newPassword: newPassword,
+                    },
+                    body: JSON.stringify(passwordData)
+
+
+                }); 
+
+                if (response.ok) {
+                    showSuccessMessage('Password updated successfully');
+                    clearPasswordFields();
+                    setDisplayPasswordModal(false);
+                } else {
+                    const error = await response.text();
+                    showErrorMessage(error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showErrorMessage('Something went wrong. Please try again later.');
+            }
+        }
     };
 
 
@@ -122,16 +193,9 @@ function EditProfile() {
     return (
         <>
             <AsideEditProfile photoURL={photoURL} />
-            <div id="cancel-modal" className="modal">
-                <div className="modal-content">
-                    <p>Cancel changes?</p>
-                    <Button text="Yes" onClick={handleCancel} />
-                    <Button text="No" />
-                </div>
-            </div>
-
+         
             <main className="main-editProfile">
-                <form className="editProfile-register" id="edit-profile-form" onSubmit={handleSubmit}>
+                <form className="editProfile-register" id="edit-profile-form" onSubmit={handleSubmitProfileChanges}>
                     <div className="editProfile-fieldsContainer">
                         <div className="left-fields-editProfile">
                             <label className="labels-edit-profile" id="email-editProfile-label">Email</label>
@@ -148,7 +212,7 @@ function EditProfile() {
                     </div>
                     <div className="editProfile-Buttons">
                         <Button text="Change Password" onClick={handlePasswordModal}/>
-                        <Button text="Cancel" onClick={handleCancel} />
+                        <Button text="Cancel" onClick={handleCancelEdition} />
                         <Button type="submit" text="Save" disabled={areInputsUnchanged()} />
                     </div>
                 </form>
@@ -157,12 +221,12 @@ function EditProfile() {
             <div id="passwordModal" className={`modal ${displayPasswordModal ? 'modalShown' : ''}`}>                
             <div className="modalContent">
                     <form id="changePasswordForm">
-                        <input type="password" id="profile_oldPassword" name="profile_oldPassword" placeholder="Current Password:" required />
-                        <input type="password" id="profile_newPassword" name="profile_newPassword" placeholder="New Password" required />
-                        <input type="password" id="profile_confirmPassword" name="profile_confirmPassword" placeholder="Confirm New Password" required />
+                        <input type="password" id="profile_oldPassword" name="profile_oldPassword" placeholder="Current Password" value={passwordData.profile_oldPassword} onChange={handlePasswordChange} required />
+                        <input type="password" id="profile_newPassword" name="profile_newPassword" placeholder="New Password" value={passwordData.profile_newPassword} onChange={handlePasswordChange} required />
+                        <input type="password" id="profile_confirmPassword" name="profile_confirmPassword" placeholder="Confirm New Password" value={passwordData.profile_confirmPassword} onChange={handlePasswordChange} required />
                         <div className="modal-buttons">
                             <Button text="Cancel" onClick={handlePasswordModal}/>
-                            <Button type="submit" text="Save" />
+                            <Button type="submit" text="Save" onClick={handleSubmitPasswordChanges} />
                         </div>
                     </form>
                 </div>
