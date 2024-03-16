@@ -156,6 +156,10 @@
     gap: 1rem;
     pointer-events: all;
   }
+  .modal-buttons {
+    display: flex;
+  }
+
   .modal button {
     text-align: center;
     margin: 0 auto;
@@ -196,13 +200,11 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
     border: 2px solid #ddd; /* Borda */
   }
+
+  #passwordModal.modalShown {
+    display: block;
+}
   
-  /* Estilo para o cabeçalho do modal */
-  .modal-header {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-  }
   
   /* Estilo para o botão de fechar */
   .close {

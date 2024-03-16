@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './RegisterContainer.css';
 import { useNavigate } from 'react-router-dom';
+import { showSuccessMessage } from '../../functions/Messages/SuccessMessage';
+import { showErrorMessage } from '../../functions/Messages/ErrorMessage';
+import { showWarningMessage } from '../../functions/Messages/WarningMessage';
 
 function registerContainer() {
 
@@ -116,15 +119,16 @@ function registerContainer() {
 
                 if (response.ok) {
                     navigate('/');
-                    console.log('Registration successful');
+                    showSuccessMessage('Registration successful');
                 } else if (response.status === 409) {
-                    alert("Username already in use");
+                    showWarningMessage("Username already in use");
                 } else {
-                    alert("Something went wrong. Please try again later.");
+                    const error = await response.text();
+                    showErrorMessage(error);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert("Something went wrong. Please try again later.");
+                showErrorMessage("Something went wrong. Please try again later.");
             }
         }
     }

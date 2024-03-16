@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 function BaseHeader() {
-console.log(UserStore.getState().user);
+
     let firstName = "";
     if (UserStore.getState().user.firstName !== undefined) {
         firstName = UserStore.getState().user.firstName;

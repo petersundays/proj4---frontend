@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, Zoom, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserStore } from '../../Stores/UserStore';
 import Button from '../General/Button';
-
+import { showSuccessMessage } from '../../functions/Messages/SuccessMessage';
+import { showErrorMessage } from '../../functions/Messages/ErrorMessage';
 
 function LoginContainer() {
-
+    
     const navigate = useNavigate();
 
     const handleRegisterClick = () => {
@@ -45,17 +45,17 @@ function LoginContainer() {
 
             if (response.ok) {
                 const user = await response.json();
-                UserStore.setState({ user: user });
-                toast.success('Welcome to Agile Scrum!', {type: "success", theme: "colored", position: "top-center", transition: Zoom, autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: true}); 
+                UserStore.setState({ user: user });       
+                showSuccessMessage('Welcome to Agile Scrum!');
                 navigate('/my-scrum');
             } else if (response.status === 401) {
-                alert("Invalid credentials, please try again :(");
+                showErrorMessage("Invalid credentials, please try again.");
             } else {
-                alert("Something went wrong. Please try again later.");
+                showErrorMessage("Something went wrong. Please try again later.");
             }
         } catch (error) {
             console.error('Error:', error);
-            alert("Something went wrong. Please try again later.");
+            showErrorMessage("Something went wrong. Please try again later.");
         }
     };
 
