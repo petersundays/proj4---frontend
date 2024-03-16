@@ -13,6 +13,13 @@ function EditProfile() {
     const [formData, setFormData] = useState({ ...user }); 
     const [photoURL, setPhotoURL] = useState(user.photoURL);
 
+    const [displayPasswordModal, setDisplayPasswordModal] = useState(false);
+
+    const handlePasswordModal = () => {
+        setDisplayPasswordModal(!displayPasswordModal);
+    }; 
+
+
 
     const handlePhotoURLChangeOnAside = (event) => {
         const newPhotoURL = event.target.value;
@@ -21,15 +28,11 @@ function EditProfile() {
         img.src = newPhotoURL;
         img.onload = () => {
             setPhotoURL(newPhotoURL);
-            /* PictureEditionStore.setState({ photoURL: newPhotoURL }); */
         };
         img.onerror = () => {
             setPhotoURL(user.photoURL);
-/*             PictureEditionStore.setState({ photoURL: originalPhotoURL });
- */        };
+        };
     };
-
-
     
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -40,11 +43,6 @@ function EditProfile() {
         handleInputChange(event);
         handlePhotoURLChangeOnAside(event);
     };
-
-  /*    const handlePhotoURLChange = (event) => {
-        const newPhotoURL = event.target.value;
-        setFormData({ ...formData, photoURL: newPhotoURL });
-    }; */
 
     const areInputsUnchanged = () => {
         return (
@@ -84,7 +82,6 @@ function EditProfile() {
         } else {
 
             inputsThatChanged();
-            console.log('Form Data:', formData);
             
             const token = UserStore.getState().user.token;
             const updateRequest = `http://localhost:8080/backend_proj4_war_exploded/rest/users/update-profile/${user.username}`;
@@ -150,24 +147,23 @@ function EditProfile() {
                         </div>
                     </div>
                     <div className="editProfile-Buttons">
-                        <Button text="Change Password" />
+                        <Button text="Change Password" onClick={handlePasswordModal}/>
                         <Button text="Cancel" onClick={handleCancel} />
                         <Button type="submit" text="Save" disabled={areInputsUnchanged()} />
                     </div>
                 </form>
             </main>
 
-            <div id="passwordModal">
-                <div className="modalContent">
-                    <div className="modal-header">
-                        <span className="close">&times;</span>
-                    </div>
-
+            <div id="passwordModal" className={`modal ${displayPasswordModal ? 'modalShown' : ''}`}>                
+            <div className="modalContent">
                     <form id="changePasswordForm">
                         <input type="password" id="profile_oldPassword" name="profile_oldPassword" placeholder="Current Password:" required />
                         <input type="password" id="profile_newPassword" name="profile_newPassword" placeholder="New Password" required />
                         <input type="password" id="profile_confirmPassword" name="profile_confirmPassword" placeholder="Confirm New Password" required />
-                        <Button type="submit" text="Save" />
+                        <div className="modal-buttons">
+                            <Button text="Cancel" onClick={handlePasswordModal}/>
+                            <Button type="submit" text="Save" />
+                        </div>
                     </form>
                 </div>
             </div>
