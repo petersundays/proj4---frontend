@@ -1,4 +1,4 @@
-import '../Tasks/Asides.css';
+import '../../General/Asides.css';
 import React from 'react';
 import { UserStore } from '../../../Stores/UserStore';
 

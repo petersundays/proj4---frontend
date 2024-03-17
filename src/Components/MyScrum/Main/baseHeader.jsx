@@ -38,6 +38,8 @@ function BaseHeader() {
                     <ul id="menu">
                         <li id="nav-home"><Link to="/my-scrum" draggable="false">My Scrum</Link></li>
                         <li id="nav-all-tasks"><a draggable="false">All Tasks</a></li>
+                        <li id="nav-categories"><Link to="/my-scrum/categories" draggable="false">Categories</Link></li>
+
                     </ul>
                 </nav>
                 <div className="nav-menu-right">

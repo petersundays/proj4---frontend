@@ -1,6 +1,6 @@
 import	React from 'react';
-import './LandingPage.css';
-import loginContainer from './LoginContainer';
+import '../Components/LandingPage/LandingPage.css';
+import loginContainer from '../Components/LandingPage/LoginContainer.jsx';
 
 function LandingPage() {
     return (

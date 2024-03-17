@@ -5,6 +5,7 @@ import TasksContainer from "../Tasks/TasksContainer";
 import BaseHeader from "./baseHeader";
 import Footer from "./Footer";
 import EditProfile from "../EditProfile/EditProfile";
+import AsideCategories from "../Categories/AsideCategories";
 
 function MainPage() {
     return (
@@ -14,6 +15,7 @@ function MainPage() {
                 <Routes>
                     <Route path="/" element={<TasksContainer />} />
                     <Route path="edit-profile" element={<EditProfile />} />
+                    <Route path="categories" element={<AsideCategories />} />
                 </Routes>
             </div>
             <Footer />
