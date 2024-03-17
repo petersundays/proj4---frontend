@@ -48,8 +48,8 @@ function AsideCategories() {
 
 
     const getCategoriesNames = async () => {
-        const categories = await getCategories();
-        setCategories(categories);
+        
+        setCategories(CategoriesStore.getState().categories);
         setCategoriesLoaded(true); 
     }
 
@@ -104,36 +104,6 @@ function AsideCategories() {
         }
     }     
 
-
-    const getCategories = async () => {
-        
-        const categoriesRequest = "http://localhost:8080/backend_proj4_war_exploded/rest/users/categories";
-        try {
-            const response = await fetch(categoriesRequest, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': '*/*',
-                    token: token
-                }
-            });
-
-            if (response.ok) {
-                const categories = await response.json();
-                const categoriesNames = categories.map(category => category.name);
-                CategoriesStore.getState().setCategories(categoriesNames); 
-                return categoriesNames;
-            } else {
-                const error = await response.text();
-                showErrorMessage('Error: ' + error);
-                return [];
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showErrorMessage('Something went wrong. Please try again later.');
-            return [];
-        }
-    }
 
     const createCategory = async () => {
 
