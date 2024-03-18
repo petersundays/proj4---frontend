@@ -1,11 +1,16 @@
 import React from 'react';
 import { UserStore } from '../../../Stores/UserStore.jsx';
+import './TaskElement.css';
 import darkCross from '../../../multimedia/dark-cross-01.png';
 import restoreIcon from '../../../multimedia/restoreIcon.png';
 
 
 
 const TaskElement = ({ task }) => {
+
+    const key = task.id;
+    console.log('key: ', key);
+    console.log('taskID: ', task.taskId);
 
     const LOW = 100;
     const MEDIUM = 200;
@@ -66,7 +71,7 @@ const TaskElement = ({ task }) => {
 
 
     return (
-        <div className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={taskElementId} draggable="true" > 
+        <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={taskElementId} draggable="true" > 
             <div className='post-it'>
                 <h3>{taskElementTitle}</h3>
                 <div className='post-it-text'>

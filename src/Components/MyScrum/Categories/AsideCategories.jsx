@@ -37,7 +37,6 @@ function AsideCategories() {
         if (selectedCategory === '') {
             showErrorMessage('Please select a category to edit.');
         } else {
-            console.log('selectedCategory', selectedCategory);
             setDisplayCategoryModal(!displayCategoryModal);
         }
     }; 

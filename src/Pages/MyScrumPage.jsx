@@ -1,11 +1,11 @@
 import AsideAddTask from "../Components/MyScrum/Tasks/AsideAddTask";
-import TasksContainer from "../Components/MyScrum/Tasks/TasksContainer";
+import MyTasks from "../Components/MyScrum/Tasks/MyTasks";
 
 function MyScrumPage() {
     return (
         <>
             <AsideAddTask />
-            <TasksContainer />
+            <MyTasks />
         </>
     );
 }
