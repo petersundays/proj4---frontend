@@ -1,7 +1,7 @@
 import AsideAddTask from "../Components/MyScrum/Tasks/AsideAddTask";
 import MyTasks from "../Components/MyScrum/Tasks/MyTasks";
 
-function MyScrumPage() {
+function MyTasksPage() {
     return (
         <>
             <AsideAddTask />
@@ -9,4 +9,4 @@ function MyScrumPage() {
         </>
     );
 }
-export default MyScrumPage;
+export default MyTasksPage;

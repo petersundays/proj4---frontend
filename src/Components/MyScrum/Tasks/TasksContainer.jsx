@@ -1,37 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import "./TasksContainer.css";
 import TaskElement from './TaskElement';
-import { TasksStore } from '../../../Stores/TasksStore';
 
-function TasksContainer() {
+function TasksContainer( {tasks} ) {
+    const tasksToRender = tasks.tasks;
+
+    
     const LOW = 100;
     const MEDIUM = 200;
     const HIGH = 300;
 
-    const [tasks, setTasks] = useState([]);
-
     useEffect(() => {
-        const unsubscribe = TasksStore.subscribe(
-            (newTasks) => {
-                console.log('newTasks: ', newTasks);
-                setTasks(newTasks.tasks); // Access the tasks array from the newTasks object
-            },
-            (state) => state.tasks
-        );
-
-        // Initialize tasks when the component mounts
-        setTasks(TasksStore.getState().tasks);
-
-        return () => {
-            unsubscribe();
-        };
-    }, []);
+    }, [tasks]);
 
     const renderTasks = (stateId) => {
-        return tasks
-            .filter(task => task.stateId === stateId) 
-            .map(task => <TaskElement key={task.id} task={task} />);
-           
+        console.log('CONTAINER.jsx updated:', tasksToRender);
+
+        return tasksToRender
+            ? tasksToRender
+                .filter(task => task.stateId === stateId) 
+                .map(task => <TaskElement key={task.id} task={task} />)
+            : null;
     };
     
 
