@@ -9,8 +9,6 @@ import restoreIcon from '../../../multimedia/restoreIcon.png';
 const TaskElement = ({ task }) => {
 
     const key = task.id;
-    console.log('key: ', key);
-    console.log('taskID: ', task.taskId);
 
     const LOW = 100;
     const MEDIUM = 200;

@@ -4,7 +4,8 @@ import '../Components/MyScrum/Main/MainPage.css';
 import BaseHeader from '../Components/MyScrum/Main/baseHeader';
 import Footer from '../Components/MyScrum/Main/Footer';
 import CategoriesPage from './CategoriesPage';
-import MyScrumPage from './MyScrumPage';
+import MyTasksPage from './MyTasksPage';
+import AllTasksPage from './AllTasksPage';
 import EditProfilePage from './EditProfilePage';
 
 function MainPage() {
@@ -13,9 +14,10 @@ function MainPage() {
             <BaseHeader />
             <div className="container" id="container">
                 <Routes>
-                    <Route path="/" element={< MyScrumPage />} />
+                    <Route path="/" element={< MyTasksPage />} />
                     <Route path="edit-profile" element={<EditProfilePage />} />
                     <Route path="categories" element={<CategoriesPage />} />
+                    <Route path="all-tasks" element={<AllTasksPage />} />
                 </Routes>
             </div>
             <Footer />

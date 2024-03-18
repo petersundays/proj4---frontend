@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import './baseHeader.css';
 import { UserStore } from '../../../Stores/UserStore';
-import { TasksStore } from '../../../Stores/TasksStore';
+import { MyTasksStore } from '../../../Stores/MyTasksStore';
 import { CategoriesStore } from '../../../Stores/CategoriesStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,7 +28,7 @@ function BaseHeader() {
 
     const handleLogout = () => {
         UserStore.setState({ user: {} });
-        TasksStore.setState({ tasks: [] });
+        MyTasksStore.setState({ tasks: [] });
         CategoriesStore.setState({ categories: [] });
 
         navigate('/');
@@ -41,8 +41,8 @@ function BaseHeader() {
                 <img src='/multimedia/logo-scrum-05.png' id="logo-header" height="50" draggable="false"/>
                 <nav className="nav-menu-left">
                     <ul id="menu">
-                        <li id="nav-home"><Link to="/my-scrum" draggable="false">My Scrum</Link></li>
-                        <li id="nav-all-tasks"><a draggable="false">All Tasks</a></li>
+                        <li id="nav-home"><Link to="/my-scrum" draggable="false">My Tasks</Link></li>
+                        <li id="nav-all-tasks"><Link to="/my-scrum/all-tasks" draggable="false">All Tasks</Link></li>
                         <li id="nav-categories"><Link to="/my-scrum/categories" draggable="false">Categories</Link></li>
 
                     </ul>
