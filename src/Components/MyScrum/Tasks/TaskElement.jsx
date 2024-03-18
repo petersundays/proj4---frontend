@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserStore } from '../../../Stores/UserStore.jsx';
+import { EditTaskStore } from '../../../Stores/EditTaskStore.jsx';
 import './TaskElement.css';
 import darkCross from '../../../multimedia/dark-cross-01.png';
 import restoreIcon from '../../../multimedia/restoreIcon.png';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const TaskElement = ({ task }) => {
 
+    const navigate = useNavigate();
     const key = task.id;
 
     const LOW = 100;
@@ -28,7 +31,6 @@ const TaskElement = ({ task }) => {
     const taskElementErased = task.erased;
 
 
-
     const addPriorityClass = () => {
         if (task.priority === LOW) {
             return 'low';
@@ -47,7 +49,7 @@ const TaskElement = ({ task }) => {
 
     const addEraseButton = () => {
         if ( (typeOfUser === SCRUM_MASTER && !taskElementErased) || (typeOfUser === PRODUCT_OWNER && !taskElementErased) ) {
-            return <img src={darkCross} className='apagarButton' dataset={taskElementId} alt='erase' />
+            return <img src={darkCross} className='apagarButton' dataset={taskElementId} alt='erase' onClick={handleEraseButton} />
         } 
     }
 
@@ -55,21 +57,26 @@ const TaskElement = ({ task }) => {
         if (typeOfUser === PRODUCT_OWNER && taskElementErased) {
             return (
             <>
-                <img src={darkCross} className='permanent-delete-button' dataset={taskElementId} alt='delete' />
+                <img src={darkCross} className='permanent-delete-button' dataset={taskElementId} onClick={handleEraseButton} alt='delete' />
                 <img src={restoreIcon} className='restore-button' dataset={taskElementId} alt='delete' />
             </>
             )
         }
     }
 
+    const handleTaskToEdit = (event) => {
+        const taskToEditId = event.currentTarget.id;
+        EditTaskStore.setState({ task: taskToEditId });
+        navigate('/my-scrum/edit-task', { state: { task: taskToEditId } });
+    }
 
-
-
-
-
+    const handleEraseButton = (event) => {
+        console.log('Erase button:', event.target);
+    }
+   
 
     return (
-        <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={taskElementId} draggable="true" > 
+        <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={key} draggable="true" onDoubleClick={handleTaskToEdit} > 
             <div className='post-it'>
                 <h3>{taskElementTitle}</h3>
                 <div className='post-it-text'>
