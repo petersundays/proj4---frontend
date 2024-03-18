@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import './baseHeader.css';
 import { UserStore } from '../../../Stores/UserStore';
+import { TasksStore } from '../../../Stores/TasksStore';
+import { CategoriesStore } from '../../../Stores/CategoriesStore';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -26,6 +28,9 @@ function BaseHeader() {
 
     const handleLogout = () => {
         UserStore.setState({ user: {} });
+        TasksStore.setState({ tasks: [] });
+        CategoriesStore.setState({ categories: [] });
+
         navigate('/');
     };
 

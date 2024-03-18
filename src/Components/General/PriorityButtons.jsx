@@ -1,33 +1,48 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './PriorityButtons.css';
 
 function PriorityButtons({ onSelectPriority }) {
-    
     const LOW = 100;
     const MEDIUM = 200;
     const HIGH = 300;
 
-    const [priority, setPriority] = useState('');
+    const [selectedPriority, setSelectedPriority] = useState(null);
 
-    const handlePriority = (e, priorityValue) => {
+    const handlePriority = (priorityValue) => {
         if (priorityValue === 'Low') {
-            priorityValue = LOW;
+            setSelectedPriority(LOW);
+            onSelectPriority(LOW);
         } else if (priorityValue === 'Medium') {
-            priorityValue = MEDIUM;
+            setSelectedPriority(MEDIUM);
+            onSelectPriority(MEDIUM);
         } else if (priorityValue === 'High') {
-            priorityValue = HIGH;
+            setSelectedPriority(HIGH);
+            onSelectPriority(HIGH);
         }
 
-        setPriority(priorityValue);
-        e.target.classList.add('selected');
-        onSelectPriority(priorityValue); 
-    }
+        
+    };
 
     return (
         <div className="priority-buttons-home">
-            <button className="priority-button-home low" id="low-button-home" onClick={(e) => handlePriority(e, 'Low')}>Low</button>
-            <button className="priority-button-home medium" id="medium-button-home" onClick={(e) => handlePriority(e, 'Medium')}>Medium</button>
-            <button className="priority-button-home high" id="high-button-home" onClick={(e) => handlePriority(e, 'High')}>High</button>
+            <button
+                className={`priority-button-home low ${selectedPriority === LOW ? 'selected' : ''}`}
+                onClick={() => handlePriority('Low')}
+            >
+                Low
+            </button>
+            <button
+                className={`priority-button-home medium ${selectedPriority === MEDIUM ? 'selected' : ''}`}
+                onClick={() => handlePriority('Medium')}
+            >
+                Medium
+            </button>
+            <button
+                className={`priority-button-home high ${selectedPriority === HIGH ? 'selected' : ''}`}
+                onClick={() => handlePriority('High')}
+            >
+                High
+            </button>
         </div>
     );
 }
