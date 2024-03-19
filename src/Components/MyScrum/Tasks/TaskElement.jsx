@@ -4,6 +4,8 @@ import './TaskElement.css';
 import darkCross from '../../../multimedia/dark-cross-01.png';
 import restoreIcon from '../../../multimedia/restoreIcon.png';
 import { useNavigate } from 'react-router-dom';
+import { showErrorMessage } from '../../../functions/Messages/ErrorMessage.js';
+import { showWarningMessage } from '../../../functions/Messages/WarningMessage.js';
 
 
 
@@ -11,6 +13,9 @@ const TaskElement = ({ task }) => {
 
     const navigate = useNavigate();
     const key = task.id;
+
+    const taskOwner = task.owner.username;
+    const userLoggedIn = UserStore.getState().user.username;
 
     const LOW = 100;
     const MEDIUM = 200;
@@ -62,7 +67,15 @@ const TaskElement = ({ task }) => {
     }
 
     const handleTaskToEdit = (event) => {
-        navigate('/my-scrum/edit-task', { state: { task: task } });
+        
+        if (typeOfUser=== DEVELOPER && task.erased) {
+            showErrorMessage('Tarefa apagada, não é possível editar.');
+            return;
+        } else if ((taskOwner !== userLoggedIn && typeOfUser !== SCRUM_MASTER && typeOfUser !== PRODUCT_OWNER) && task.erased === false) {
+            showErrorMessage('Não é possível editar tarefas de outros utilizadores.');
+        } else if ((taskOwner === userLoggedIn || typeOfUser === SCRUM_MASTER || typeOfUser === PRODUCT_OWNER) && task.erased === false) {
+            navigate('/my-scrum/edit-task', { state: { task: task } });
+        }
     }
 
     const handleEraseButton = (event) => {
