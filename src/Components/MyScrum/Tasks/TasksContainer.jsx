@@ -1,17 +1,26 @@
 import React, { useEffect } from 'react';
 import "./TasksContainer.css";
 import TaskElement from './TaskElement';
+import { MyTasksStore } from '../../../Stores/MyTasksStore';
+import { AllTasksStore } from '../../../Stores/AllTasksStore';
 
-function TasksContainer( {tasks} ) {
-    const tasksToRender = tasks.tasks;
+function TasksContainer() {
 
+    let tasksToRender = [];
+
+    if (window.location.pathname === '/my-scrum') {
+        tasksToRender = MyTasksStore.getState().tasks;
+    } else if (window.location.pathname === '/my-scrum/all-tasks') {
+        tasksToRender = AllTasksStore.getState().tasks;
+    }
+    
     
     const LOW = 100;
     const MEDIUM = 200;
     const HIGH = 300;
 
     useEffect(() => {
-    }, [tasks]);
+    }, [tasksToRender]);
 
     const renderTasks = (stateId) => {
         console.log('CONTAINER.jsx updated:', tasksToRender);

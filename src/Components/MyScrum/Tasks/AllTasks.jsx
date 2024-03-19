@@ -4,16 +4,12 @@ import { UserStore } from '../../../Stores/UserStore';
 import TasksContainer from './TasksContainer';
 
 function AllTasks() {
-    const token = UserStore.getState().user.token;
-    const username = UserStore.getState().user.username;
-
-    const [tasksLoaded, setTasksLoaded] = useState(false);
 
     // Subscribe to AllTasksStore
     const [tasks, setTasks] = useState(AllTasksStore.getState().tasks);
 
     useEffect(() => {
-        if (!tasksLoaded) {
+        {
             getTasks();
         }
 
@@ -29,12 +25,11 @@ function AllTasks() {
         return () => {
             unsubscribe();
         };
-    }, [tasksLoaded]);
+    }, []);
 
     const getTasks = async () => {
         const tasks = await getAllTasks();
         AllTasksStore.setState({ tasks: tasks });
-        setTasksLoaded(true);
     };
 
 
@@ -64,7 +59,7 @@ function AllTasks() {
 
     }
     return (
-        <TasksContainer tasks={tasks}/>
+        <TasksContainer />
     );
 }
 

@@ -6,6 +6,7 @@ export const MyTasksStore = create(
         (set) => ({
             tasks: [],
             addTask: (task) => {
+                console.log("STORE! Task added to store:", task);
                 set((state) => ({
                     tasks: [...state.tasks, task],
                 }));

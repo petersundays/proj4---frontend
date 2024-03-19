@@ -8,6 +8,7 @@ import { CategoriesStore } from "../../../Stores/CategoriesStore.jsx";
 import PriorityButtons from "../../General/PriorityButtons.jsx";
 import Button from "../../General/Button.jsx";
 import { MyTasksStore } from "../../../Stores/MyTasksStore.jsx";
+import { getTasksFromUser } from "../../../functions/Tasks.jsx/GetTasksFromUser.js";
 
 function AsideAddTask() {
   const token = UserStore.getState().user.token;
@@ -142,8 +143,6 @@ function AsideAddTask() {
         });
 
         if (response.ok) {
-          addTaskToStore(task);
-          console.log("ASIDE! Task added to store:", MyTasksStore.getState().tasks);
           showSuccessMessage("Task added successfully: " + taskTitle);
         } else {
           const error = await response.text();
@@ -153,6 +152,11 @@ function AsideAddTask() {
         console.error("Error:", error);
         showErrorMessage("Something went wrong. Please try again later.");
       }
+      const updateMyTasks = await getTasksFromUser(username, token);
+      // Set tasks attribute in MyTasksStore
+      MyTasksStore.setState({ tasks: updateMyTasks });
+
+      
     }
   };
   return (
