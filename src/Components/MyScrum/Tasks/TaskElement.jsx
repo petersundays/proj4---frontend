@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { UserStore } from '../../../Stores/UserStore.jsx';
-import { EditTaskStore } from '../../../Stores/EditTaskStore.jsx';
 import './TaskElement.css';
 import darkCross from '../../../multimedia/dark-cross-01.png';
 import restoreIcon from '../../../multimedia/restoreIcon.png';
@@ -26,8 +25,6 @@ const TaskElement = ({ task }) => {
     const taskElementId = task.taskId;
     const taskElementTitle = task.title;
     const taskElementDescription = task.description;
-    const taskElementPriority = task.priority;
-    const taskElementStateId = task.stateId;
     const taskElementErased = task.erased;
 
 
@@ -65,9 +62,7 @@ const TaskElement = ({ task }) => {
     }
 
     const handleTaskToEdit = (event) => {
-        const taskToEditId = event.currentTarget.id;
-        EditTaskStore.setState({ task: taskToEditId });
-        navigate('/my-scrum/edit-task', { state: { task: taskToEditId } });
+        navigate('/my-scrum/edit-task', { state: { task: task } });
     }
 
     const handleEraseButton = (event) => {
