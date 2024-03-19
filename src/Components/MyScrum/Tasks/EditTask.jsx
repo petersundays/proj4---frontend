@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "./EditTask.css";
 import { CategoriesStore } from '../../../Stores/CategoriesStore';
 import { UserStore } from '../../../Stores/UserStore';
+import {MyTasksStore} from '../../../Stores/MyTasksStore';
 import Button from '../../General/Button';
 import PriorityButtons from '../../General/PriorityButtons';
 import { showErrorMessage } from '../../../functions/Messages/ErrorMessage';
@@ -12,18 +13,10 @@ import { showWarningMessage } from '../../../functions/Messages/WarningMessage';
 
 function EditTask() {
 
-    const location = useLocation();
-    const navigate = useNavigate();
-    let taskToEdit = {};
-   
-    if (location.state != null && location.state.task != undefined) {
+    const typeOfUser = UserStore.getState().user.typeOfUser;
+    const userLoggedIn = UserStore.getState().user.username;
 
-        taskToEdit = location.state.task;
-  
-    } else {
-        navigate('/my-scrum');
-    }
-
+    
     const LOW = 100;
     const MEDIUM = 200;
     const HIGH = 300;
@@ -32,6 +25,43 @@ function EditTask() {
     const DOING = 200;
     const DONE = 300;
 
+    const DEVELOPER = 100;
+    const SCRUM_MASTER = 200;
+    const PRODUCT_OWNER = 300;
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    let taskToEdit = {};
+    
+
+    if (location.state == null && location.state.task == undefined) {
+        navigate('/my-scrum');
+
+    } else {
+
+        taskToEdit = location.state.task;
+        console.log('owner username: ' + taskToEdit.owner.username);
+        console.log('user logged in: ' + userLoggedIn);
+  
+        if ((
+            (taskToEdit.owner.username !== userLoggedIn || taskToEdit.owner.username === userLoggedIn && taskToEdit.erased) &&
+            typeOfUser !== SCRUM_MASTER && 
+            typeOfUser !== PRODUCT_OWNER)) 
+            {
+                showErrorMessage('You are not allowed to edit this task');
+                navigate('/my-scrum');
+            } else {
+            
+                if ((typeOfUser === SCRUM_MASTER || typeOfUser === PRODUCT_OWNER) && taskToEdit.erased) {
+                    showWarningMessage('This task is erased and cannot be edited');
+              
+                }
+            } 
+              
+    }   
+    
+
+
     const categories = CategoriesStore((state) => state.categories);
 
     const [taskTitle, setTaskTitle] = useState(taskToEdit.title);
@@ -39,8 +69,8 @@ function EditTask() {
     const [taskStateId, setTaskStateId] = useState(taskToEdit.stateId);
     const [taskPriority, setTaskPriority] = useState(taskToEdit.priority);
     const [taskStartDate, setTaskStartDate] = useState(taskToEdit.startDate);
-    const [taskEndDate, setTaskEndDate] = useState(taskToEdit.endDate);
-    const [taskCategory, setTaskCategory] = useState(taskToEdit.category);
+    const [taskEndDate, setTaskEndDate] = useState(taskToEdit.limitDate);
+    const [taskCategory, setTaskCategory] = useState(taskToEdit.category.name);
     
     const [selectedStateId, setSelectedStateId] = useState(null);
     const [selectedPriority, setSelectedPriority] = useState(null);
@@ -99,11 +129,15 @@ function EditTask() {
     };
 
     const createSelectOptions = () => {
+        if (isTaskErased()) {
+            return <option value={taskToEdit.category.name} selected>{taskToEdit.category.name}</option>;
+        } else {
         return categories.map((category) => (
           <option key={category} value={category}>
             {category}
           </option>
         ));
+        }
     };
 
     const isAnyFieldEmpty = () => {
@@ -121,7 +155,20 @@ function EditTask() {
         }
     };
 
-    const handleSaveTask = () => {
+    function isTaskErased() {
+        if (taskToEdit.erased) {
+            return true;
+        } else {
+            return false;
+        }   
+    }
+
+
+    const handleCancel = () => {
+        navigate('/my-scrum');
+    };
+
+    const handleSaveTask = async () => {
         
         if (isAnyFieldEmpty()) {
             showWarningMessage('Please fill all fields');
@@ -136,9 +183,37 @@ function EditTask() {
                 stateId: taskStateId,
                 priority: taskPriority,
                 startDate: taskStartDate,
-                endDate: taskEndDate,
-                category: taskCategory,
+                limitDate: taskEndDate,
+                category: {name: taskCategory},
             };
+            console.log('TAREFA A PASSAR:' + task.category);
+
+            const editRequest = `http://localhost:8080/backend_proj4_war_exploded/rest/users/updatetask/${taskId}`;
+
+            try {
+                const response = await fetch(editRequest, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: '*/*',
+                        token: token,
+                    },
+                    body: JSON.stringify(task),
+                });
+
+                if (response.ok) {
+                    const updatedTask = MyTasksStore.getState().tasks.find(t => t.id === task.id);
+                    console.log('TAREFA ATUALIZADA: ' + updatedTask);
+                    showSuccessMessage('Task saved successfully');
+                    navigate('/my-scrum');
+                } else {
+                    const error = await response.text();
+                    showErrorMessage('Error: ' + error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showErrorMessage('Something went wrong. Please try again later.');
+            }
         }
     }
             
@@ -150,14 +225,14 @@ function EditTask() {
             <main className="main-task">
                 <div className="detalhes-task">
                     <div>
-                        <textarea id="titulo-task" placeholder='Task Title' value={taskTitle} onChange={handleInputChange} ></textarea>
+                        <textarea id="titulo-task" placeholder='Task Title' value={taskTitle} onChange={handleInputChange} readOnly={isTaskErased} ></textarea>
                     </div>
                     <div>
-                        <textarea className="text-task" id="descricao-task" placeholder='Task Description' value={taskDescription} onChange={handleInputChange}></textarea>
+                        <textarea className="text-task" id="descricao-task" placeholder='Task Description' value={taskDescription} onChange={handleInputChange} readOnly={isTaskErased}></textarea>
                     </div>
                     <div className="task-save">
-                        <Button text="Save"></Button>
-                        <Button text="Cancel"></Button>                    
+                        <Button text="Save" onClick={handleSaveTask}></Button>
+                        <Button text="Cancel" onClick={handleCancel}></Button>                    
                     </div>
                 </div>
                 <div className="task-buttons">
@@ -165,31 +240,31 @@ function EditTask() {
                         <div className="task-status">
                             <h4 className="taskH4">status</h4>
                             <div className="status-buttons">
-                                <button className={`status-button todo ${selectedStateId === TODO ? 'selected' :'' }`} id="todo-button" value='todo' onClick={() => handleTaskStateId('Todo')}>To do</button>
-                                <button className={`status-button doing ${selectedStateId === DOING ? 'selected' :'' }`} id="doing-button" value='doing' onClick={() => handleTaskStateId('Doing')}>Doing</button>
-                                <button className={`status-button done ${selectedStateId === DONE ? 'selected' :'' }`} id="done-button" value='done' onClick={() => handleTaskStateId('Done')} >Done</button>
+                                <button className={`status-button todo ${selectedStateId === TODO ? 'selected' :'' }`} id="todo-button" value='todo' onClick={() => handleTaskStateId('Todo')} disabled={isTaskErased}>To do</button>
+                                <button className={`status-button doing ${selectedStateId === DOING ? 'selected' :'' }`} id="doing-button" value='doing' onClick={() => handleTaskStateId('Doing')} disabled={isTaskErased}>Doing</button>
+                                <button className={`status-button done ${selectedStateId === DONE ? 'selected' :'' }`} id="done-button" value='done' onClick={() => handleTaskStateId('Done')} disabled={isTaskErased}>Done</button>
                             </div>
                         </div>
                         <div className="task-priority">
                             <h4 className="taskH4">priority</h4>
                             <div className="priority-buttons">
-                                <PriorityButtons onSelectPriority={handleTaskPriority} priority={taskToEdit.priority}></PriorityButtons>
+                                <PriorityButtons onSelectPriority={handleTaskPriority} priority={taskToEdit.priority} disabled={isTaskErased}></PriorityButtons>
                             </div>
                         </div>
                         <div className="dates">
                             <h4 className="taskH4">Dates</h4>
                             <div className="startDateDiv">
                                 <label className="label-start-date">Start date: </label>
-                                <input type="date" id="startDate-editTask" value={taskStartDate} onChange={handleInputChange} ></input> 
+                                <input type="date" id="startDate-editTask" value={taskStartDate} onChange={handleInputChange} readOnly={isTaskErased} ></input> 
                         
                                 <label className='label-end-date'>End date: </label>
-                                <input type="date" id="endDate-editTask" value={taskEndDate} onChange={handleInputChange} ></input> 
+                                <input type="date" id="endDate-editTask" value={taskEndDate} onChange={handleInputChange} readOnly={isTaskErased} ></input> 
                             </div>
                         </div>
                         <div className="category">
                             <h4 className="taskH4">Category</h4>
                             <div id="div-dropdown">
-                                <select id="task-category-edit" value={taskCategory} onChange={handleTaskCategory} required>
+                                <select id="task-category-edit" value={taskCategory} onChange={handleTaskCategory} disabled={isTaskErased} required>
                                     <option value="" disabled >Category</option>
                                     {createSelectOptions()}
                                 </select>
@@ -197,7 +272,7 @@ function EditTask() {
                         </div>
                     </div>
                 </div>
-    </main>
+            </main>
 
         </>
     ); 
