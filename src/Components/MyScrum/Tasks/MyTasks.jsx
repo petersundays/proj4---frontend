@@ -8,12 +8,10 @@ function MyTasks() {
     const token = UserStore.getState().user.token;
     const username = UserStore.getState().user.username;
 
-    const [tasksLoaded, setTasksLoaded] = useState(false);
     const [tasks, setTasks] = useState({ tasks: [] });
     
     useEffect(() => {
-        console.log('MyTasksStore updated:', MyTasksStore.getState().tasks);
-        if (!tasksLoaded) {
+        {
             getTasks();
         }
 
@@ -23,7 +21,6 @@ function MyTasks() {
                 setTasks(newTasks);
             },
             (state) => state.tasks,
-            console.log('MYTASKS.jsx subscribe:', MyTasksStore.getState().tasks)
         );
         
 
@@ -36,13 +33,11 @@ function MyTasks() {
     const getTasks = async () => {
         const tasks = await getTasksFromUser(username, token);
         MyTasksStore.setState({ tasks: tasks });
-        setTasksLoaded(true);
-        console.log('GET TASKS:', tasks);
      };
 
 
     return (
-        <TasksContainer tasks={tasks} />
+        <TasksContainer />
     );
 }
 
