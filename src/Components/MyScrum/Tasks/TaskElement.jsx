@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { UserStore } from '../../../Stores/UserStore.jsx';
+import { MyTasksStore } from '../../../Stores/MyTasksStore.jsx';
 import './TaskElement.css';
 import darkCross from '../../../multimedia/dark-cross-01.png';
 import restoreIcon from '../../../multimedia/restoreIcon.png';
 import { useNavigate } from 'react-router-dom';
 import { showErrorMessage } from '../../../functions/Messages/ErrorMessage.js';
-import { showWarningMessage } from '../../../functions/Messages/WarningMessage.js';
+import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage.js';
+import { getTasksFromUser } from '../../../functions/Tasks/GetTasksFromUser.js';
+import { getAllTasks } from '../../../functions/Tasks/GetAllTasks.js';
+import { AllTasksStore } from '../../../Stores/AllTasksStore.jsx';
+import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
 
 
 
 const TaskElement = ({ task }) => {
 
     const navigate = useNavigate();
-    const key = task.id;
+    const key = task.taskId;
 
     const taskOwner = task.owner.username;
     const userLoggedIn = UserStore.getState().user.username;
+    const token = UserStore.getState().user.token;
 
     const LOW = 100;
     const MEDIUM = 200;
@@ -31,6 +37,14 @@ const TaskElement = ({ task }) => {
     const taskElementTitle = task.title;
     const taskElementDescription = task.description;
     const taskElementErased = task.erased;
+
+    const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
+    const message = "Are you sure you want to delete this task";
+    
+    function handleDisplayConfirmationModal() {
+        setDisplayConfirmationModal(!displayConfirmationModal);
+    }
+
 
 
     const addPriorityClass = () => {
@@ -51,7 +65,7 @@ const TaskElement = ({ task }) => {
 
     const addEraseButton = () => {
         if ( (typeOfUser === SCRUM_MASTER && !taskElementErased) || (typeOfUser === PRODUCT_OWNER && !taskElementErased) ) {
-            return <img src={darkCross} className='apagarButton' dataset={taskElementId} alt='erase' onClick={handleEraseButton} />
+            return <img src={darkCross} className='apagarButton' id={task.id} dataset={taskElementId} alt='erase' onClick={handleEraseRestoreButton} />
         } 
     }
 
@@ -59,14 +73,14 @@ const TaskElement = ({ task }) => {
         if (typeOfUser === PRODUCT_OWNER && taskElementErased) {
             return (
             <>
-                <img src={darkCross} className='permanent-delete-button' dataset={taskElementId} onClick={handleEraseButton} alt='delete' />
-                <img src={restoreIcon} className='restore-button' dataset={taskElementId} alt='delete' />
+                <img src={darkCross} className='permanent-delete-button' id={task.id} dataset={taskElementId} alt='delete' onClick={handleDisplayConfirmationModal} />
+                <img src={restoreIcon} className='restore-button' id={task.id} dataset={taskElementId} alt='delete' onClick={handleEraseRestoreButton} />
             </>
             )
         }
     }
 
-    const handleTaskToEdit = (event) => {
+    const handleTaskToEdit = () => {
         
         if (typeOfUser=== DEVELOPER && task.erased) {
             showErrorMessage('Tarefa apagada, não é possível editar.');
@@ -78,22 +92,101 @@ const TaskElement = ({ task }) => {
         }
     }
 
-    const handleEraseButton = (event) => {
-        console.log('Erase button:', event.target);
+    const handleEraseRestoreButton = async () => {
+        let restore = false;
+        
+        if (task.erased) {
+            restore = true;
+        } 
+
+        await eraseTask(restore);
+        
+    }
+
+    const handleDeleteButton = async () => {
+        await deleteTask();
     }
    
 
+    const eraseTask = async (restore) => {
+
+        
+        const eraseRequest = `http://localhost:8080/backend_proj4_war_exploded/rest/users/${task.id}`;
+        try {
+            const response = await fetch(eraseRequest, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: '*/*',
+                    token: token,
+                },
+            });
+
+            if (response.ok) {
+                if (restore) {
+                    showSuccessMessage('Tarefa restaurada: ' + task.title);
+                } else {
+                    showSuccessMessage('Tarefa apagada: ' + task.title);
+                }
+            } else {
+                const error = await response.text();
+                showErrorMessage('Error: ' + error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorMessage('Something went wrong. Please try again later.');
+        }
+        const updateMyTasks = await getTasksFromUser(userLoggedIn, token);
+        const updateAllTasks = await getAllTasks(token);
+        MyTasksStore.setState({ tasks: updateMyTasks });
+        AllTasksStore.setState({ tasks: updateAllTasks });
+    }
+
+
+    const deleteTask = async () => {
+
+        const deleteRequest = `http://localhost:8080/backend_proj4_war_exploded/rest/users/delete/${task.id}`;
+        try {
+            const response = await fetch(deleteRequest, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: '*/*',
+                    token: token,
+                },
+            });
+
+            if (response.ok) {
+                showSuccessMessage('Tarefa eliminada: ' + task.title);
+            } else {
+                const error = await response.text();
+                showErrorMessage('Error: ' + error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorMessage('Something went wrong. Please try again later.');
+        }
+        const updateMyTasks = await getTasksFromUser(userLoggedIn, token);
+        const updateAllTasks = await getAllTasks(token);
+        MyTasksStore.setState({ tasks: updateMyTasks });
+        AllTasksStore.setState({ tasks: updateAllTasks });
+    }
+
     return (
-        <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={key} draggable="true" onDoubleClick={handleTaskToEdit} > 
-            <div className='post-it'>
-                <h3>{taskElementTitle}</h3>
-                <div className='post-it-text'>
-                    <p>{taskElementDescription}</p>
+        
+        <>
+            <ConfirmationModal onConfirm={handleDeleteButton} onCancel={handleDisplayConfirmationModal} message={message} displayPasswordModal={displayConfirmationModal} />
+            <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={key} draggable="true" onDoubleClick={handleTaskToEdit} > 
+                <div className='post-it'>
+                    <h3>{taskElementTitle}</h3>
+                    <div className='post-it-text'>
+                        <p>{taskElementDescription}</p>
+                    </div>
+                    {addEraseButton()}
+                    {addDeleteAndRestoreButton()}
                 </div>
-                {addEraseButton()}
-                {addDeleteAndRestoreButton()}
             </div>
-        </div>
+        </>
     );
 }
 export default TaskElement;

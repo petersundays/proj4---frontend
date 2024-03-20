@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MyTasksStore } from '../../../Stores/MyTasksStore';
 import { UserStore } from '../../../Stores/UserStore';
-import { getTasksFromUser } from '../../../functions/Tasks.jsx/GetTasksFromUser';
+import { getTasksFromUser } from '../../../functions/Tasks/GetTasksFromUser';
 import TasksContainer from './TasksContainer';
 
 function MyTasks() {
