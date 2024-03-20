@@ -3,6 +3,7 @@ import "./TasksContainer.css";
 import TaskElement from './TaskElement';
 import { MyTasksStore } from '../../../Stores/MyTasksStore';
 import { AllTasksStore } from '../../../Stores/AllTasksStore';
+import { UserStore } from '../../../Stores/UserStore';
 
 function TasksContainer() {
 
@@ -14,21 +15,35 @@ function TasksContainer() {
         tasksToRender = AllTasksStore.getState().tasks;
     }
     
+    const typeOfUser = UserStore.getState().user.typeOfUser;
     
     const LOW = 100;
     const MEDIUM = 200;
     const HIGH = 300;
+    
+    const DEVELOPER = 100;
+    const SCRUM_MASTER = 200;
+    const PRODUCT_OWNER = 300;
 
     useEffect(() => {
     }, [tasksToRender]);
 
+    const filteredTasks = (stateId) => {
+        if (typeOfUser === DEVELOPER) {
+            return tasksToRender
+                .filter(task => task.stateId === stateId && task.erase === false) 
+                .map(task => <TaskElement key={task.id} task={task} />)
+            } else {
+                return tasksToRender
+                    .filter(task => task.stateId === stateId)
+                    .map(task => <TaskElement key={task.id} task={task} />)
+            }
+    }
+
     const renderTasks = (stateId) => {
-        console.log('CONTAINER.jsx updated:', tasksToRender);
 
         return tasksToRender
-            ? tasksToRender
-                .filter(task => task.stateId === stateId) 
-                .map(task => <TaskElement key={task.id} task={task} />)
+            ? filteredTasks(stateId)
             : null;
     };
     

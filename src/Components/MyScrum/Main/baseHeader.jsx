@@ -5,10 +5,12 @@ import { UserStore } from '../../../Stores/UserStore';
 import { MyTasksStore } from '../../../Stores/MyTasksStore';
 import { CategoriesStore } from '../../../Stores/CategoriesStore';
 import { useNavigate } from 'react-router-dom';
-
+import { AllTasksStore } from '../../../Stores/AllTasksStore';
+import { showInfoMessage } from '../../../functions/Messages/InfoMessage';
 
 
 function BaseHeader() {
+    const token = UserStore.getState().user.token;
 
     let firstName = "";
     if (UserStore.getState().user.firstName !== undefined) {
@@ -26,10 +28,32 @@ function BaseHeader() {
 
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         UserStore.setState({ user: {} });
         MyTasksStore.setState({ tasks: [] });
         CategoriesStore.setState({ categories: [] });
+        AllTasksStore.setState({ tasks: [] });
+
+        const logout = "http://localhost:8080/backend_proj4_war_exploded/rest/users/logout";
+        try {
+            const response = await fetch(logout, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "*/*",
+                    token: token,
+                },
+            });
+
+            if (response.ok) {
+                showInfoMessage("Thank you for using Agile Scrum. See you soon!");
+            } else {
+                const error = await response.text();
+                console.log("Error: " + error);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        } 
 
         navigate('/');
     };

@@ -40,8 +40,6 @@ function EditTask() {
     } else {
 
         taskToEdit = location.state.task;
-        console.log('owner username: ' + taskToEdit.owner.username);
-        console.log('user logged in: ' + userLoggedIn);
   
         if ((
             (taskToEdit.owner.username !== userLoggedIn || taskToEdit.owner.username === userLoggedIn && taskToEdit.erased) &&
@@ -77,7 +75,6 @@ function EditTask() {
 
   
     useEffect(() => {
-        console.log(taskToEdit);
         if (taskToEdit.stateId === TODO) {
             setSelectedStateId(TODO);
         } else if (taskToEdit.stateId === DOING) {
@@ -186,7 +183,6 @@ function EditTask() {
                 limitDate: taskEndDate,
                 category: {name: taskCategory},
             };
-            console.log('TAREFA A PASSAR:' + task.category);
 
             const editRequest = `http://localhost:8080/backend_proj4_war_exploded/rest/users/updatetask/${taskId}`;
 
@@ -203,7 +199,6 @@ function EditTask() {
 
                 if (response.ok) {
                     const updatedTask = MyTasksStore.getState().tasks.find(t => t.id === task.id);
-                    console.log('TAREFA ATUALIZADA: ' + updatedTask);
                     showSuccessMessage('Task saved successfully');
                     navigate('/my-scrum');
                 } else {
