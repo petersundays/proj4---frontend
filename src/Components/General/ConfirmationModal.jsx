@@ -1,12 +1,11 @@
 import './ConfirmationModal.css';
 import Button from "./Button";
 
-export function ConfirmationModal ({ onConfirm, onCancel, message, displayPasswordModal }) {
+export function ConfirmationModal ({ onConfirm, onCancel, message, displayModal }) {
 
-    console.log('ConfirmationModal', displayPasswordModal);
     return (
         <>
-            <div id="cancel-modal" className={`modal ${displayPasswordModal ? 'modalShown' : ''}`}>
+            <div id="cancel-modal" className={`modal ${displayModal ? 'modalShown' : ''}`}>
                 <div className="modal-content">
                     <p>{message}</p>
                     <Button text="Confirm" onClick={onConfirm} />

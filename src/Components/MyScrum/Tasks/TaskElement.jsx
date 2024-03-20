@@ -39,7 +39,7 @@ const TaskElement = ({ task }) => {
     const taskElementErased = task.erased;
 
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
-    const message = "Are you sure you want to delete this task";
+    const message = "Are you sure you want to delete this task?";
     
     function handleDisplayConfirmationModal() {
         setDisplayConfirmationModal(!displayConfirmationModal);
@@ -175,7 +175,7 @@ const TaskElement = ({ task }) => {
     return (
         
         <>
-            <ConfirmationModal onConfirm={handleDeleteButton} onCancel={handleDisplayConfirmationModal} message={message} displayPasswordModal={displayConfirmationModal} />
+            <ConfirmationModal onConfirm={handleDeleteButton} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} />
             <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={key} draggable="true" onDoubleClick={handleTaskToEdit} > 
                 <div className='post-it'>
                     <h3>{taskElementTitle}</h3>

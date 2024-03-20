@@ -4,6 +4,7 @@ import { UserStore } from '../../../Stores/UserStore.jsx';
 import { showErrorMessage } from '../../../functions/Messages/ErrorMessage';
 import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage'; 
 import { CategoriesStore } from '../../../Stores/CategoriesStore.jsx';
+import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
 
 function AsideCategories() {
     const token = UserStore.getState().user.token;
@@ -14,6 +15,12 @@ function AsideCategories() {
     const [categoriesLoaded, setCategoriesLoaded] = useState(false); 
     const [displayCategoryModal, setDisplayCategoryModal] = useState(false);
     const [newName, setNewName] = useState('');
+    const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
+    const message = "Are you sure you want to delete this category?";
+    
+    function handleDisplayConfirmationModal() {
+        setDisplayConfirmationModal(!displayConfirmationModal);
+    }
 
     useEffect(() => {
         if (!categoriesLoaded) {
@@ -70,6 +77,7 @@ function AsideCategories() {
             showErrorMessage('Please select a category to delete.');
         } else {
             deleteCategory();
+            setDisplayConfirmationModal(false);
         }
     }
 
@@ -173,6 +181,7 @@ function AsideCategories() {
 
     return ( 
         <>
+            <ConfirmationModal onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} />
             <aside>
                 <div className="add-task-container">
                     <h3 id="categories-h3">Categories</h3>
@@ -184,7 +193,7 @@ function AsideCategories() {
                     </select>
                     <div id='category-buttons-container'>
                         <Button text="Edit" width="120px" onClick={handleCategoryModal}></Button>
-                        <Button text="Delete" width="120px" onClick={handleDeleteCategory} ></Button>
+                        <Button text="Delete" width="120px" onClick={handleDisplayConfirmationModal} ></Button>
                     </div>
                     <div className='space-between'></div>
                     <label className="labels-create-category" id="label-category">New Category</label>
