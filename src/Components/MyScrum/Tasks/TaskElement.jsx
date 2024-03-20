@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserStore } from '../../../Stores/UserStore.jsx';
 import { MyTasksStore } from '../../../Stores/MyTasksStore.jsx';
+import { TasksByCategoryStore } from '../../../Stores/TasksByCategoryStore.jsx';
 import './TaskElement.css';
 import darkCross from '../../../multimedia/dark-cross-01.png';
 import restoreIcon from '../../../multimedia/restoreIcon.png';
@@ -41,11 +42,9 @@ const TaskElement = ({ task }) => {
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
     const message = "Are you sure you want to delete this task?";
     
-    function handleDisplayConfirmationModal() {
+    const handleDisplayConfirmationModal = () => {
         setDisplayConfirmationModal(!displayConfirmationModal);
     }
-
-
 
     const addPriorityClass = () => {
         if (task.priority === LOW) {
@@ -138,6 +137,8 @@ const TaskElement = ({ task }) => {
         }
         const updateMyTasks = await getTasksFromUser(userLoggedIn, token);
         const updateAllTasks = await getAllTasks(token);
+
+       
         MyTasksStore.setState({ tasks: updateMyTasks });
         AllTasksStore.setState({ tasks: updateAllTasks });
     }

@@ -1,20 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./TasksContainer.css";
 import TaskElement from './TaskElement';
 import { MyTasksStore } from '../../../Stores/MyTasksStore';
 import { AllTasksStore } from '../../../Stores/AllTasksStore';
+import { TasksByCategoryStore } from '../../../Stores/TasksByCategoryStore';
 import { UserStore } from '../../../Stores/UserStore';
 
 function TasksContainer() {
-
-    let tasksToRender = [];
-
-    if (window.location.pathname === '/my-scrum') {
-        tasksToRender = MyTasksStore.getState().tasks;
-    } else if (window.location.pathname === '/my-scrum/all-tasks') {
-        tasksToRender = AllTasksStore.getState().tasks;
-    }
-    
+    const [tasksToRender, setTasksToRender] = useState([]);
     const typeOfUser = UserStore.getState().user.typeOfUser;
     
     const LOW = 100;
@@ -26,27 +19,48 @@ function TasksContainer() {
     const PRODUCT_OWNER = 300;
 
     useEffect(() => {
-    }, [tasksToRender]);
+        const updateTasks = () => {
+            let tasks = [];
+            if (window.location.pathname === '/my-scrum') {
+                tasks = MyTasksStore.getState().tasks;
+            } else if (window.location.pathname === '/my-scrum/all-tasks') {
+                tasks = AllTasksStore.getState().tasks;
+            } else if (window.location.pathname === '/my-scrum/categories') {
+                tasks = TasksByCategoryStore.getState().tasks;
+            }
+            setTasksToRender(tasks);
+        };
+
+        updateTasks();
+
+        const unsubscribeMyTasks = MyTasksStore.subscribe(updateTasks);
+        const unsubscribeAllTasks = AllTasksStore.subscribe(updateTasks);
+        const unsubscribeTasksByCategory = TasksByCategoryStore.subscribe(updateTasks);
+
+        return () => {
+            unsubscribeMyTasks();
+            unsubscribeAllTasks();
+            unsubscribeTasksByCategory();
+        };
+    }, []);
 
     const filteredTasks = (stateId) => {
         if (typeOfUser === DEVELOPER) {
             return tasksToRender
                 .filter(task => task.stateId === stateId && task.erase === false) 
                 .map(task => <TaskElement key={task.id} task={task} />)
-            } else {
-                return tasksToRender
-                    .filter(task => task.stateId === stateId)
-                    .map(task => <TaskElement key={task.id} task={task} />)
-            }
+        } else {
+            return tasksToRender
+                .filter(task => task.stateId === stateId)
+                .map(task => <TaskElement key={task.id} task={task} />)
+        }
     }
 
     const renderTasks = (stateId) => {
-
         return tasksToRender
             ? filteredTasks(stateId)
             : null;
     };
-    
 
     return (
         <>

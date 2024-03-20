@@ -1,32 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../General/Button.jsx';
 import { UserStore } from '../../../Stores/UserStore.jsx';
+import { AllTasksStore } from '../../../Stores/AllTasksStore.jsx';
+import { TasksByCategoryStore } from '../../../Stores/TasksByCategoryStore.jsx';
 import { showErrorMessage } from '../../../functions/Messages/ErrorMessage';
 import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage'; 
 import { CategoriesStore } from '../../../Stores/CategoriesStore.jsx';
 import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
+import { getTasksByCategory } from '../../../functions/Tasks/GetTasksByCategory.js';
 
 function AsideCategories() {
+
     const token = UserStore.getState().user.token;
+
     const [newCategory, setNewCategory] = useState('');
     const [categorySearch, setCategorySearch] = useState('');
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [categoriesLoaded, setCategoriesLoaded] = useState(false); 
     const [displayCategoryModal, setDisplayCategoryModal] = useState(false);
     const [newName, setNewName] = useState('');
+    const [tasks, setTasks] = useState({ tasks: [] });
+    
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
     const message = "Are you sure you want to delete this category?";
     
-    function handleDisplayConfirmationModal() {
-        setDisplayConfirmationModal(!displayConfirmationModal);
-    }
+   
+    useEffect(() => {
+        {
+            getCategoriesNames(); 
+        }
+
+        // Atualiza o estado do componente com o estado do store sempre que a store for atualizado
+        const unsubscribe = TasksByCategoryStore.subscribe(
+            (newTasks) => {
+                setTasks(newTasks);
+            },
+            (state) => state.tasks,
+        );
+        
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
 
     useEffect(() => {
-        if (!categoriesLoaded) {
-            getCategoriesNames();  
+        if (selectedCategory !== '') {
+            getTasksByCategory(selectedCategory, token);
         }
-    }, [categoriesLoaded]); 
+    }, [selectedCategory]);
+
+
+
+    const handleDisplayConfirmationModal = () => {
+        setDisplayConfirmationModal(!displayConfirmationModal);
+    }
 
     const handleNewCategory = (e) => {
         setNewCategory(e.target.value);
@@ -56,7 +84,6 @@ function AsideCategories() {
     const getCategoriesNames = async () => {
         
         setCategories(CategoriesStore.getState().categories);
-        setCategoriesLoaded(true); 
     }
 
     const createSelectOptions = () => {
@@ -66,8 +93,11 @@ function AsideCategories() {
                 <option key={category} value={category}>{category}</option>
             ));
         } else {
-            return categories.filter(category => category.toLowerCase().includes(categorySearch.toLowerCase())).map(category => (
+            return categories
+            .filter(category => category.toLowerCase().includes(categorySearch.toLowerCase()))
+            .map(category => (
                 <option key={category} value={category}>{category}</option>
+                
             ));
         }
     }
@@ -80,6 +110,16 @@ function AsideCategories() {
             setDisplayConfirmationModal(false);
         }
     }
+
+    const getTasks = async () => {
+        const tasks = await getTasksByCategory();
+        TasksByCategoryStore.setState({ tasks: tasks });
+     };
+
+   
+
+
+
 
     const handleCategoryEdition = async () => {
 
@@ -175,6 +215,12 @@ function AsideCategories() {
             console.error('Error:', error);
             showErrorMessage('Something went wrong. Please try again later.');
         }
+    }
+
+
+    const showTasksByCategory = () => {
+        const categoryName = selectedCategory.name;
+        console.log(categoryName);
     }
 
     
