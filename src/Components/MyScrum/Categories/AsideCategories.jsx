@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../General/Button.jsx';
 import { UserStore } from '../../../Stores/UserStore.jsx';
-import { AllTasksStore } from '../../../Stores/AllTasksStore.jsx';
 import { TasksByCategoryStore } from '../../../Stores/TasksByCategoryStore.jsx';
 import { showErrorMessage } from '../../../functions/Messages/ErrorMessage';
 import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage'; 
