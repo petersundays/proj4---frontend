@@ -66,9 +66,15 @@ function AsideCategories() {
         setNewCategory(e.target.value);
     }
 
-    const handleCategorySearch = (e) => {
-        setCategorySearch(e.target.value);
+const handleCategorySearch = (e) => {
+    const searchValue = e.target.value;
+    setCategorySearch(searchValue);
+
+    const matchingCategory = categories.find(category => category.toLowerCase().includes(searchValue.toLowerCase()));
+    if (matchingCategory) {
+        setSelectedCategory(matchingCategory);
     }
+}
 
     const handleCategoryChange = (e) => {
         setSelectedCategory(e.target.value);
