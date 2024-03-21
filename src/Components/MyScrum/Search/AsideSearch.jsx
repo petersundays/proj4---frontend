@@ -3,13 +3,13 @@ import Button from '../../General/Button.jsx';
 import { UserStore } from '../../../Stores/UserStore.jsx';
 import { AllTasksStore } from '../../../Stores/AllTasksStore.jsx';
 import { TasksByCategoryStore } from '../../../Stores/TasksByCategoryStore.jsx';
-import { showErrorMessage } from '../../../functions/Messages/ErrorMessage';
-import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage'; 
+import { showErrorMessage } from '../../../functions/Messages/ErrorMessage.js';
+import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage.js'; 
 import { CategoriesStore } from '../../../Stores/CategoriesStore.jsx';
-import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
 import { getTasksByCategory } from '../../../functions/Tasks/GetTasksByCategory.js';
+import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
 
-function AsideCategories() {
+function AsideSearch() {
 
     const token = UserStore.getState().user.token;
 
@@ -66,15 +66,9 @@ function AsideCategories() {
         setNewCategory(e.target.value);
     }
 
-const handleCategorySearch = (e) => {
-    const searchValue = e.target.value;
-    setCategorySearch(searchValue);
-
-    const matchingCategory = categories.find(category => category.toLowerCase().includes(searchValue.toLowerCase()));
-    if (matchingCategory) {
-        setSelectedCategory(matchingCategory);
+    const handleCategorySearch = (e) => {
+        setCategorySearch(e.target.value);
     }
-}
 
     const handleCategoryChange = (e) => {
         setSelectedCategory(e.target.value);
@@ -224,16 +218,16 @@ const handleCategorySearch = (e) => {
             <ConfirmationModal onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} />
             <aside>
                 <div className="add-task-container">
-                    <h3 id="categories-h3">Categories</h3>
-                    <label className="labels-search-category" id="label-category">Search</label>
+                    <h3 id="categories-h3">Search Tasks</h3>
+                    <label className="labels-search-category" id="label-category">User</label>
                     <input type="search" id="search-category" placeholder="Category" onChange={handleCategorySearch}/>
                     <select id="task-category" value={selectedCategory} onChange={handleCategoryChange} required>
-                        <option value="" disabled>Select category</option>
+                        <option value="" disabled>Select user</option>
                         {createSelectOptions()}
                     </select>
                     <div id='category-buttons-container'>
-                        <Button text="Edit" width="120px" onClick={handleCategoryModal}></Button>
                         <Button text="Delete" width="120px" onClick={handleDisplayConfirmationModal} ></Button>
+                        <Button text="Edit" width="120px" onClick={handleCategoryModal}></Button><Button text="Edit" width="120px" onClick={handleCategoryModal}></Button>  
                     </div>
                     <div className='space-between'></div>
                     <label className="labels-create-category" id="label-category">New Category</label>
@@ -257,4 +251,4 @@ const handleCategorySearch = (e) => {
     );
 }
 
-export default AsideCategories;
+export default AsideSearch;

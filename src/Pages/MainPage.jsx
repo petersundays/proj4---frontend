@@ -8,6 +8,7 @@ import MyTasksPage from './MyTasksPage';
 import AllTasksPage from './AllTasksPage';
 import EditProfilePage from './EditProfilePage';
 import EditTaskPage from './EditTaskPage';
+import SearchTasksPage from './SearchTasksPage';
 
 function MainPage() {
     return (
@@ -19,6 +20,7 @@ function MainPage() {
                     <Route path="edit-profile" element={<EditProfilePage />} />
                     <Route path="categories" element={<CategoriesPage />} />
                     <Route path="all-tasks" element={<AllTasksPage />} />
+                    <Route path="search-tasks" element={<SearchTasksPage />} />
                     <Route path="edit-task" element={<EditTaskPage />} />
 
                 </Routes>
