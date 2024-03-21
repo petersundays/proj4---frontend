@@ -25,7 +25,6 @@ function TasksContainer() {
             if (window.location.pathname === '/my-scrum') {
                 tasks = MyTasksStore.getState().tasks;
             } else if (window.location.pathname === '/my-scrum/all-tasks') {
-                console.log('all tasks' + AllTasksStore.getState().tasks);
                 tasks = AllTasksStore.getState().tasks;
             } else if (window.location.pathname === '/my-scrum/categories') {
                 tasks = TasksByCategoryStore.getState().tasks;
