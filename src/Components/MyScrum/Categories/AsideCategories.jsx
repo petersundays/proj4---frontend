@@ -8,6 +8,7 @@ import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage';
 import { CategoriesStore } from '../../../Stores/CategoriesStore.jsx';
 import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
 import { getTasksByCategory } from '../../../functions/Tasks/GetTasksByCategory.js';
+import { getAllTasks } from '../../../functions/Tasks/GetAllTasks.js';
 
 function AsideCategories() {
 
@@ -45,9 +46,16 @@ function AsideCategories() {
     }, []);
 
     useEffect(() => {
-        if (selectedCategory !== '') {
-            getTasksByCategory(selectedCategory, token);
+        async function fetchTasks() {
+            if (selectedCategory !== '') {
+                const selectedCategoryTasks = await getTasksByCategory(selectedCategory, token);
+                TasksByCategoryStore.setState({ tasks: selectedCategoryTasks });
+            } else {
+                const allTasks = await getAllTasks(token);
+                TasksByCategoryStore.setState({ tasks: allTasks });
+            }
         }
+        fetchTasks();
     }, [selectedCategory]);
 
 
@@ -228,7 +236,7 @@ const handleCategorySearch = (e) => {
                     <label className="labels-search-category" id="label-category">Search</label>
                     <input type="search" id="search-category" placeholder="Category" onChange={handleCategorySearch}/>
                     <select id="task-category" value={selectedCategory} onChange={handleCategoryChange} required>
-                        <option value="" disabled>Select category</option>
+                        <option value="" >All categories</option>
                         {createSelectOptions()}
                     </select>
                     <div id='category-buttons-container'>
