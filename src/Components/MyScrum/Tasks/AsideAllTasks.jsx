@@ -47,9 +47,13 @@ function AsideAllTasks() {
         const searchValue = e.target.value;
         setUserSearch(searchValue);
     
-        const matchingUser = users.find(user => user.username.toLowerCase().includes(searchValue.toLowerCase()));
-        if (matchingUser) {
-            setSelectedUser(matchingUser);
+        if (searchValue === '') {
+            setSelectedUser('');
+        } else {
+            const matchingUser = users.find(user => user.username.toLowerCase().includes(searchValue.toLowerCase()));
+            if (matchingUser) {
+                setSelectedUser(matchingUser.username);
+            }
         }
     }
 

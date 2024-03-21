@@ -78,9 +78,13 @@ const handleCategorySearch = (e) => {
     const searchValue = e.target.value;
     setCategorySearch(searchValue);
 
-    const matchingCategory = categories.find(category => category.toLowerCase().includes(searchValue.toLowerCase()));
-    if (matchingCategory) {
-        setSelectedCategory(matchingCategory);
+    if (searchValue === '') {
+        setSelectedCategory('');
+    } else {
+        const matchingCategory = categories.find(category => category.toLowerCase().includes(searchValue.toLowerCase()));
+        if (matchingCategory) {
+            setSelectedCategory(matchingCategory);
+        }
     }
 }
 
