@@ -48,7 +48,7 @@ function TasksContainer() {
     const filteredTasks = (stateId) => {
         if (typeOfUser === DEVELOPER) {
             return tasksToRender
-                .filter(task => task.stateId === stateId && task.erase === false) 
+                .filter(task => task.stateId === stateId && task.erased === false) 
                 .map(task => <TaskElement key={task.id} task={task} />)
         } else {
             return tasksToRender
@@ -58,6 +58,7 @@ function TasksContainer() {
     }
 
     const renderTasks = (stateId) => {
+
         return tasksToRender
             ? filteredTasks(stateId)
             : null;
