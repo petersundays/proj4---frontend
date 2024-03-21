@@ -10,6 +10,7 @@ import { showErrorMessage } from '../../../functions/Messages/ErrorMessage.js';
 import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage.js';
 import { getTasksFromUser } from '../../../functions/Tasks/GetTasksFromUser.js';
 import { getAllTasks } from '../../../functions/Tasks/GetAllTasks.js';
+import { getTasksByCategory } from '../../../functions/Tasks/GetTasksByCategory.js';
 import { AllTasksStore } from '../../../Stores/AllTasksStore.jsx';
 import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
 
@@ -88,6 +89,8 @@ const TaskElement = ({ task }) => {
             showErrorMessage('Não é possível editar tarefas de outros utilizadores.');
         } else if ((taskOwner === userLoggedIn || typeOfUser === SCRUM_MASTER || typeOfUser === PRODUCT_OWNER) && task.erased === false) {
             navigate('/my-scrum/edit-task', { state: { task: task } });
+        } else if ((typeOfUser === SCRUM_MASTER || typeOfUser === PRODUCT_OWNER) && task.erased === true) {
+            navigate('/my-scrum/edit-task', { state: { task: task } });
         }
     }
 
@@ -135,12 +138,16 @@ const TaskElement = ({ task }) => {
             console.error('Error:', error);
             showErrorMessage('Something went wrong. Please try again later.');
         }
+    
         const updateMyTasks = await getTasksFromUser(userLoggedIn, token);
         const updateAllTasks = await getAllTasks(token);
+        const category = task.category.name;
+        const updateCategoryTasks = await getTasksByCategory(category, token);
 
-       
         MyTasksStore.setState({ tasks: updateMyTasks });
         AllTasksStore.setState({ tasks: updateAllTasks });
+        TasksByCategoryStore.setState({ tasks: updateCategoryTasks });
+        
     }
 
 
@@ -167,10 +174,15 @@ const TaskElement = ({ task }) => {
             console.error('Error:', error);
             showErrorMessage('Something went wrong. Please try again later.');
         }
+        
         const updateMyTasks = await getTasksFromUser(userLoggedIn, token);
         const updateAllTasks = await getAllTasks(token);
+        const category = task.category.name;
+        const updateCategoryTasks = await getTasksByCategory(category, token);
+        
         MyTasksStore.setState({ tasks: updateMyTasks });
         AllTasksStore.setState({ tasks: updateAllTasks });
+        TasksByCategoryStore.setState({ tasks: updateCategoryTasks });
     }
 
     return (

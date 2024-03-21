@@ -53,7 +53,13 @@ function AsideCategories() {
 
 
     const handleDisplayConfirmationModal = () => {
-        setDisplayConfirmationModal(!displayConfirmationModal);
+        
+        if (TasksByCategoryStore.getState().tasks.length > 0) {
+            showErrorMessage('Category cannot be deleted. There are tasks associated with this category.');
+            return;
+        } else {
+            setDisplayConfirmationModal(!displayConfirmationModal);
+        }
     }
 
     const handleNewCategory = (e) => {
@@ -103,21 +109,10 @@ function AsideCategories() {
     }
 
     const handleDeleteCategory = () => {
-        if (selectedCategory === '') {
-            showErrorMessage('Please select a category to delete.');
-        } else {
+
             deleteCategory();
             setDisplayConfirmationModal(false);
-        }
     }
-
-    const getTasks = async () => {
-        const tasks = await getTasksByCategory();
-        TasksByCategoryStore.setState({ tasks: tasks });
-     };
-
-   
-
 
 
 
@@ -216,14 +211,7 @@ function AsideCategories() {
             showErrorMessage('Something went wrong. Please try again later.');
         }
     }
-
-
-    const showTasksByCategory = () => {
-        const categoryName = selectedCategory.name;
-        console.log(categoryName);
-    }
-
-    
+  
 
     return ( 
         <>

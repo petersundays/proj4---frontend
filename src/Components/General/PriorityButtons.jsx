@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './PriorityButtons.css';
 
-function PriorityButtons({ onSelectPriority, priority = null }) {
+function PriorityButtons({ onSelectPriority, priority = null, taskErased }) {
     const LOW = 100;
     const MEDIUM = 200;
     const HIGH = 300;
@@ -30,18 +30,21 @@ function PriorityButtons({ onSelectPriority, priority = null }) {
             <button
                 className={`priority-button-home low ${selectedPriority === LOW ? 'selected' : ''}`}
                 onClick={() => handlePriority('Low')}
+                disabled={taskErased}
             >
                 Low
             </button>
             <button
                 className={`priority-button-home medium ${selectedPriority === MEDIUM ? 'selected' : ''}`}
                 onClick={() => handlePriority('Medium')}
+                disabled={taskErased}
             >
                 Medium
             </button>
             <button
                 className={`priority-button-home high ${selectedPriority === HIGH ? 'selected' : ''}`}
                 onClick={() => handlePriority('High')}
+                disabled={taskErased}
             >
                 High
             </button>

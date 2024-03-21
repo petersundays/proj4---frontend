@@ -18,6 +18,7 @@ function TasksContainer() {
     const SCRUM_MASTER = 200;
     const PRODUCT_OWNER = 300;
 
+
     useEffect(() => {
         const updateTasks = () => {
             let tasks = [];
