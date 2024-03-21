@@ -31,32 +31,24 @@ function EditTask() {
 
     const location = useLocation();
     const navigate = useNavigate();
-    let taskToEdit = {};
+    let  taskToEdit = location.state.task;
     
 
-    if (location.state == null && location.state.task == undefined) {
-        navigate('/my-scrum');
-
-    } else {
-
-        taskToEdit = location.state.task;
-  
-        if ((
-            (taskToEdit.owner.username !== userLoggedIn || taskToEdit.owner.username === userLoggedIn && taskToEdit.erased) &&
+    useEffect(() => {
+        
+        if ((taskToEdit.owner.username !== userLoggedIn || taskToEdit.owner.username === userLoggedIn && taskToEdit.erased) &&
             typeOfUser !== SCRUM_MASTER && 
-            typeOfUser !== PRODUCT_OWNER)) 
-            {
-                showErrorMessage('You are not allowed to edit this task');
-                navigate('/my-scrum');
-            } else {
-            
-                if ((typeOfUser === SCRUM_MASTER || typeOfUser === PRODUCT_OWNER) && taskToEdit.erased) {
-                    showWarningMessage('This task is erased and cannot be edited');
-              
-                }
-            } 
-              
-    }   
+            typeOfUser !== PRODUCT_OWNER) 
+        {
+            showErrorMessage('You are not allowed to edit this task');
+            navigate('/my-scrum');
+        } else {
+            if ((typeOfUser === SCRUM_MASTER || typeOfUser === PRODUCT_OWNER) && taskToEdit.erased) {
+                showWarningMessage('This task is erased and cannot be edited');
+            }
+        } 
+        
+    }, [location, navigate, userLoggedIn, typeOfUser]);
     
 
 
@@ -69,6 +61,7 @@ function EditTask() {
     const [taskStartDate, setTaskStartDate] = useState(taskToEdit.startDate);
     const [taskEndDate, setTaskEndDate] = useState(taskToEdit.limitDate);
     const [taskCategory, setTaskCategory] = useState(taskToEdit.category.name);
+    const [taskErased, setTaskErased] = useState(taskToEdit.erased);
     
     const [selectedStateId, setSelectedStateId] = useState(null);
     const [selectedPriority, setSelectedPriority] = useState(null);
@@ -127,7 +120,7 @@ function EditTask() {
 
     const createSelectOptions = () => {
         if (isTaskErased()) {
-            return <option value={taskToEdit.category.name} selected>{taskToEdit.category.name}</option>;
+            return <option value={taskToEdit.category.name} >{taskToEdit.category.name}</option>;
         } else {
         return categories.map((category) => (
           <option key={category} value={category}>
@@ -220,14 +213,14 @@ function EditTask() {
             <main className="main-task">
                 <div className="detalhes-task">
                     <div>
-                        <textarea id="titulo-task" placeholder='Task Title' value={taskTitle} onChange={handleInputChange} readOnly={isTaskErased} ></textarea>
+                        <textarea id="titulo-task" placeholder='Task Title' value={taskTitle} onChange={handleInputChange} readOnly={ taskErased ? true : false} ></textarea>
                     </div>
                     <div>
-                        <textarea className="text-task" id="descricao-task" placeholder='Task Description' value={taskDescription} onChange={handleInputChange} readOnly={isTaskErased}></textarea>
+                        <textarea className="text-task" id="descricao-task" placeholder='Task Description' value={taskDescription} onChange={handleInputChange} readOnly={ taskErased ? true : false}></textarea>
                     </div>
                     <div className="task-save">
-                        <Button text="Save" onClick={handleSaveTask}></Button>
-                        <Button text="Cancel" onClick={handleCancel}></Button>                    
+                        <Button text="Save" onClick={handleSaveTask} hidden={taskErased} ></Button>
+                        <Button text={ taskErased ? "Back" : "Cancel" } onClick={handleCancel}></Button>                    
                     </div>
                 </div>
                 <div className="task-buttons">
@@ -235,31 +228,31 @@ function EditTask() {
                         <div className="task-status">
                             <h4 className="taskH4">status</h4>
                             <div className="status-buttons">
-                                <button className={`status-button todo ${selectedStateId === TODO ? 'selected' :'' }`} id="todo-button" value='todo' onClick={() => handleTaskStateId('Todo')} disabled={isTaskErased}>To do</button>
-                                <button className={`status-button doing ${selectedStateId === DOING ? 'selected' :'' }`} id="doing-button" value='doing' onClick={() => handleTaskStateId('Doing')} disabled={isTaskErased}>Doing</button>
-                                <button className={`status-button done ${selectedStateId === DONE ? 'selected' :'' }`} id="done-button" value='done' onClick={() => handleTaskStateId('Done')} disabled={isTaskErased}>Done</button>
+                                <button className={`status-button todo ${selectedStateId === TODO ? 'selected' :'' }`} id="todo-button" value='todo' onClick={() => handleTaskStateId('Todo')} disabled={ taskErased ? true : false}>To do</button>
+                                <button className={`status-button doing ${selectedStateId === DOING ? 'selected' :'' }`} id="doing-button" value='doing' onClick={() => handleTaskStateId('Doing')} disabled={ taskErased ? true : false}>Doing</button>
+                                <button className={`status-button done ${selectedStateId === DONE ? 'selected' :'' }`} id="done-button" value='done' onClick={() => handleTaskStateId('Done')} disabled={ taskErased ? true : false}>Done</button>
                             </div>
                         </div>
                         <div className="task-priority">
                             <h4 className="taskH4">priority</h4>
                             <div className="priority-buttons">
-                                <PriorityButtons onSelectPriority={handleTaskPriority} priority={taskToEdit.priority} disabled={isTaskErased}></PriorityButtons>
+                                <PriorityButtons onSelectPriority={handleTaskPriority} priority={taskToEdit.priority} disabled = {taskErased}></PriorityButtons>
                             </div>
                         </div>
                         <div className="dates">
                             <h4 className="taskH4">Dates</h4>
                             <div className="startDateDiv">
                                 <label className="label-start-date">Start date: </label>
-                                <input type="date" id="startDate-editTask" value={taskStartDate} onChange={handleInputChange} readOnly={isTaskErased} ></input> 
+                                <input type="date" id="startDate-editTask" value={taskStartDate} onChange={handleInputChange} readOnly={ taskErased ? true : false} ></input> 
                         
                                 <label className='label-end-date'>End date: </label>
-                                <input type="date" id="endDate-editTask" value={taskEndDate} onChange={handleInputChange} readOnly={isTaskErased} ></input> 
+                                <input type="date" id="endDate-editTask" value={taskEndDate} onChange={handleInputChange} readOnly={ taskErased ? true : false} ></input> 
                             </div>
                         </div>
                         <div className="category">
                             <h4 className="taskH4">Category</h4>
                             <div id="div-dropdown">
-                                <select id="task-category-edit" value={taskCategory} onChange={handleTaskCategory} disabled={isTaskErased} required>
+                                <select id="task-category-edit" value={taskCategory} onChange={handleTaskCategory} disabled={ taskErased ? true : false} required>
                                     <option value="" disabled >Category</option>
                                     {createSelectOptions()}
                                 </select>

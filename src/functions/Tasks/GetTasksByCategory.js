@@ -17,6 +17,7 @@ export const getTasksByCategory = async ( selectedCategory , token ) => {
         if (response.ok) {
             const tasks = await response.json();
             TasksByCategoryStore.setState({ tasks: tasks });
+            return tasks;
         } else {
             const error = await response.text();
             showErrorMessage('Error: ' + error);

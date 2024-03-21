@@ -8,7 +8,8 @@ function Button(props) {
             type={props.type}
             className={props.className}
             onClick={props.onClick} 
-            style={{ width: props.width }}
+            style={{ width: props.width , display: props.hidden ? 'none' : 'block'}}
+            
         >
             {props.text}
         </button>
