@@ -19,7 +19,8 @@ function BaseHeader() {
         firstName = "First Name";
     }
 
-    let photoURL = "";
+    let 
+    photoURL = "";
     if (UserStore.getState().user.photoURL !== undefined) {
         photoURL = UserStore.getState().user.photoURL;
     } else {

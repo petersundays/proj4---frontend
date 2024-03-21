@@ -1,0 +1,185 @@
+#select_role {
+    margin: 10px;
+    border: var(--green3) 2px solid;
+    margin-bottom: 15px;
+    padding: 5px;
+    width: 53%;
+    height: 8%;
+    border-top-right-radius: 7px;
+    border-top-left-radius: 7px;
+  }
+  
+  .users-details-container{
+    display: flex;
+    width: 30%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 4%;
+  }
+
+  .details-editProfile {
+    display: flex;
+    margin-top: 40px;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 70%;
+    height: 95%;
+  }
+  
+  .container-table {
+    margin-top: 20px;
+    margin-left: 30px;
+    overflow: auto;
+    width: 98%;
+    max-height: 89%;
+    border-top-left-radius: 7px; 
+    border-top-right-radius: 7px;
+    position: relative;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-header {
+    text-align: center;
+    background-color: var(--green3);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    position: sticky;
+      top: 0;
+      z-index: 1;
+  }
+  
+  .table-body {
+    font-size: 14px;
+  }
+  
+  .table-body tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .table th,
+  .table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--green2);
+  }
+  
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    width: 12%; /* Defina a largura da primeira coluna */
+  }
+  
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    width: 11%; /* Defina a largura da segunda coluna */
+  }
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    width: 11%; /* Defina a largura da primeira coluna */
+  }
+  
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    width: 15%; /* Defina a largura da segunda coluna */
+  }
+  
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    width: 12%; /* Defina a largura da primeira coluna */
+  }
+  
+  .table th:nth-child(6),
+  .table td:nth-child(6) {
+    width: 10%; /* Defina a largura da segunda coluna */
+  }
+  
+  .table th:nth-child(7),
+  .table td:nth-child(7) {
+    width: 12%; /* Defina a largura da segunda coluna */
+  }
+  
+  .table-body tr:hover {
+    background-color: #ddd;
+  }
+  
+  .editUser-fields {
+    margin-bottom: 15px;
+    padding: 5px;
+    width: 50%;
+    height: 25px;
+    background-color: var(--white);
+    font-size: 12px;
+    border: var(--green3) 2px solid;
+    border-top-right-radius: 7px;
+    border-top-left-radius: 7px;
+  }
+  
+  .editUser-fields:focus::placeholder {
+    opacity: 0.5;
+  }
+  
+  #profile-clicked-pic {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    margin: 0 30px;
+    margin-bottom: 10%;
+    object-fit: cover;
+  }
+
+  #edit-user-form{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 4%;
+  }
+
+  .hidden {
+    display: none;
+  }
+  
+  #save_edit {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: var(--done);
+    color: var(--green3);
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    cursor: pointer;
+  }
+  
+  #save_edit:hover {
+    background-color: var(--green3);
+    color: var(--green1);
+  }
+
+  #deleteUser,
+  #visibleUser{
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0;
+  background-color: var(--doing);
+  color: var(--green3);
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+#deleteUser:hover,
+#visibleUser:hover {
+  background-color: var(--green2);
+  color: var(--green1);
+}
+
+#deleteUser{
+  margin-left: 2px;
+}
