@@ -189,7 +189,10 @@ const TaskElement = ({ task }) => {
         
         <>
             <ConfirmationModal onConfirm={handleDeleteButton} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} />
-            <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={key} draggable="true" onDoubleClick={handleTaskToEdit} > 
+            <div key={key} className={`task ${addPriorityClass()} ${addTaskErasedClass()} not-draggable`} id={key} draggable="true" 
+                onDragStart={(event) => {
+                    event.dataTransfer.setData('text/plain', task.id);}}
+                onDoubleClick={handleTaskToEdit} > 
                 <div className='post-it'>
                     <h3>{taskElementTitle}</h3>
                     <div className='post-it-text'>

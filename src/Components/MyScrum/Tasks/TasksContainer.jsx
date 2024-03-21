@@ -66,19 +66,28 @@ function TasksContainer() {
 
     return (
         <>
-            <div className="titulo-main">
+            <div className="titulo-main" 
+            onDrop={(event) => { const taskId = event.dataTransfer.getData("text/plain"); }}
+            onDragOver={(event) => { event.preventDefault(); }}
+            >
                 <h2 className="main-home">To do</h2>
                 <div className="panel" id="todo">
                     {renderTasks(LOW)}
                 </div>
             </div>
-            <div className="titulo-main">
+            <div className="titulo-main"
+            onDrop={(event) => { const taskId = event.dataTransfer.getData("text/plain"); }}
+            onDragOver={(event) => { event.preventDefault(); }}
+            >
                 <h2 className="main-home">Doing</h2>
                 <div className="panel" id="doing">
                     {renderTasks(MEDIUM)}
                 </div>
             </div>
-            <div className="titulo-main">
+            <div className="titulo-main"
+            onDrop={(event) => { const taskId = event.dataTransfer.getData("text/plain"); }}
+            onDragOver={(event) => { event.preventDefault(); }}
+            >
                 <h2 className="main-home">Done</h2>
                 <div className="panel" id="done">
                     {renderTasks(HIGH)}
