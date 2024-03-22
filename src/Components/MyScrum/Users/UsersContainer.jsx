@@ -1,12 +1,21 @@
 import Button from '../../General/Button';
 import './UsersContainer.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { UserStore } from '../../../Stores/UserStore';
-
+import { AllUsersStore } from '../../../Stores/AllUsersStore';
+import {ConfirmationModal} from '../../General/ConfirmationModal';
+import { UserDetails } from './UserDetails';
 
 function UsersContainer() {
+    const token = UserStore.getState().user.token;
+    const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
+    const message = "Are you sure you want to delete this category?";
+
+
+
     return (
         <>
+            <ConfirmationModal /* onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} */ />
             <main className="main-users">
                 <div className="details-editProfile">
                     <div className="container-table">
@@ -26,7 +35,7 @@ function UsersContainer() {
                         </table>
                     </div>
                 </div>
-                <div className="users-details-container">
+                {/* <div className="users-details-container">
                     <img src="/multimedia/user-avatar.jpg" id="profile-clicked-pic" alt="Profile Pic" />
                     <form id="edit-user-form">
                         <label className="labels-edit-profile" id="email-editProfile-label">Email</label>
@@ -47,7 +56,8 @@ function UsersContainer() {
                         </select>
                         <Button text="Save" />
                     </form>
-                    </div>
+                </div> */}
+                { <UserDetails /> }
             </main>
         </>
     )

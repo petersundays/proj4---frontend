@@ -1,15 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import '../../General/Asides.css';
-import { ConfirmationModal } from '../../General/ConfirmationModal.jsx';
 import Button from '../../General/Button.jsx';
+import { AllUsersStore } from '../../../Stores/AllUsersStore.jsx';
+import { UserStore } from '../../../Stores/UserStore.jsx';
+import { getAllUsers } from '../../../functions/Users/GetAllUsers.js';
 
 function AsideUsers() {
+
+    const token = UserStore.getState().user.token;
+    const [users, setUsers] = useState(AllUsersStore.getState().users);
+    const [userSearch, setUserSearch] = useState('');
+    const [selectedUser, setSelectedUser] = useState('');
+    
+
+
+
+    useEffect(() => {
+        getAllUsersFromServer(); 
+    }, []);
+
+    const getAllUsersFromServer = async () => {
+        try {
+            const fetchedUsers = await getAllUsers(token);
+            setUsers(fetchedUsers);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            showErrorMessage('Failed to fetch users. Please try again later.');
+        }
+    };
+
+    const handleUserSearch = (e) => {
+        const searchValue = e.target.value;
+        setUserSearch(searchValue);
+    
+        if (searchValue === '') {
+            setSelectedUser('');
+        } else {
+            const matchingUser = users.find(user => user.username.toLowerCase().includes(searchValue.toLowerCase()));
+            if (matchingUser) {
+                setSelectedUser(matchingUser.username);
+            }
+        }
+    }
+
+    const handleUserChange = async (e) => {
+        setSelectedUser(e.target.value);
+    }
+
+    const createSelectOptions = () => {
+        if (userSearch === '') {
+            return users.map(user => (
+                <option key={user.username} value={user.username}>{user.username}</option>
+            ));
+        } else {
+            return users
+            .filter(user => user.username.toLowerCase().includes(userSearch.toLowerCase()))
+            .map(user => (
+                <option key={user.username} value={user.username}>{user.username}</option>
+            ));
+        }
+    }
 
       
 
     return ( 
         <>
-            <ConfirmationModal /* onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} */ />
             <aside>
                 <div className="aside-users-container">
                     <h3 id="addTask-h3">Users</h3>
@@ -30,15 +85,12 @@ function AsideUsers() {
                     </select>
                     <Button text="Search"/>
  */}
-                    <input type="search" id="search-input" placeholder="Search" />
-                    <select id="task-category" /* value={selectedCategory} onChange={handleCategoryChange}  */required>
+                    <input type="search" id="search-input" placeholder="User" onChange={handleUserSearch} />
+                    <select id="task-category" value={selectedUser} onChange={handleUserChange} required>
                         <option value="" >All users</option>
-                        {/* {createSelectOptions()} */}
+                        {createSelectOptions()} 
                     </select>
-                    <div id='category-buttons-container'>
-                        <Button text="Search" width="120px" ></Button>
-                        <Button text="Delete" width="120px" ></Button>
-                    </div>
+                        <Button text="Register New User" width="180px" ></Button>
                 </div>
             </aside>
         </>
