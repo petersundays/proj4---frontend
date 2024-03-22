@@ -11,13 +11,27 @@ function AsideUsers() {
     const [users, setUsers] = useState(AllUsersStore.getState().users);
     const [userSearch, setUserSearch] = useState('');
     const [selectedUser, setSelectedUser] = useState('');
+    const [newUser, setNewUser] = useState('false');
+    const [displayContainer, setDisplayContainer] = useState(AllUsersStore.getState().displayContainer); 
+
+
+    const handleNewUser = () => {
+        setNewUser('true');
+        AllUsersStore.getState().setNewUser(true);
+        setDisplayContainer(true);
+        AllUsersStore.getState().setDisplayContainer(true);
+    }
     
 
 
 
     useEffect(() => {
         getAllUsersFromServer(); 
+        AllUsersStore.subscribe((state) => {
+            setUsers(state.users);
+        });
     }, []);
+
 
     const getAllUsersFromServer = async () => {
         try {
@@ -90,7 +104,7 @@ function AsideUsers() {
                         <option value="" >All users</option>
                         {createSelectOptions()} 
                     </select>
-                        <Button text="Register New User" width="180px" ></Button>
+                        <Button text="Register New User" width="180px" onClick={handleNewUser} ></Button>
                 </div>
             </aside>
         </>

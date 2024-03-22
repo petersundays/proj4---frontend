@@ -15,7 +15,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 4%;
+    padding-top: 2%;
   }
 
   .details-editProfile {
@@ -41,6 +41,18 @@
   .editUser-fields:focus::placeholder {
     opacity: 0.5;
   }
+  
+  .buttons-container {
+    display: flex;
+  }
+
+#label-user-details{
+  margin-top: 10px;
+  text-align: center;
+  color: var(--green3);
+  font-size: 20px;
+}
+
   
   #profile-clicked-pic {
     width: 84px;

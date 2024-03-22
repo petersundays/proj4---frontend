@@ -7,11 +7,24 @@ import {ConfirmationModal} from '../../General/ConfirmationModal';
 import { UserDetails } from './UserDetails';
 
 function UsersContainer() {
+
     const token = UserStore.getState().user.token;
+
+    const [displayContainer, setDisplayContainer] = useState(false);
+    const [newUser, setNewUser] = useState(AllUsersStore.getState().newUser);
+
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
     const message = "Are you sure you want to delete this category?";
 
 
+    // Chamar de cada vez que se clicar numa linha da tabela
+    const handleNewUser = () => {
+        if (newUser) {
+            setNewUser(false);
+            AllUsersStore.getState().setNewUser(false);
+
+        }
+    }
 
     return (
         <>
@@ -57,7 +70,7 @@ function UsersContainer() {
                         <Button text="Save" />
                     </form>
                 </div> */}
-                { <UserDetails /> }
+                { <UserDetails displayContainer={displayContainer} /> }
             </main>
         </>
     )
