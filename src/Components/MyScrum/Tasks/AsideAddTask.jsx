@@ -21,6 +21,7 @@ function AsideAddTask() {
   const [taskStartDate, setTaskStartDate] = useState("");
   const [taskLimitDate, setTaskLimitDate] = useState("");
   const [taskCategory, setTaskCategory] = useState("");
+  const [resetPriority, setResetPriority] = useState(false);
 
   const addTaskToStore = MyTasksStore((state) => state.addTask);
 
@@ -29,6 +30,13 @@ function AsideAddTask() {
       getCategoriesNames();
     }
   }, [categoriesLoaded]);
+
+  useEffect(() => {
+    if (resetPriority) {
+      setTaskPriority("");
+      setResetPriority(false);
+    }
+}, [resetPriority]);
 
   const getCategoriesNames = async () => {
     const categories = await getAllCategories();
@@ -81,6 +89,15 @@ function AsideAddTask() {
     } else {
       return false;
     }
+  };
+
+  const clearAndDisableAllFields = () => {
+    setTaskTitle("");
+    setTaskDescription("");
+    setResetPriority(true);
+    setTaskStartDate("");
+    setTaskLimitDate("");
+    setTaskCategory("");
   };
 
   const getAllCategories = async () => {
@@ -144,6 +161,7 @@ function AsideAddTask() {
 
         if (response.ok) {
           showSuccessMessage("Task added successfully: " + taskTitle);
+          clearAndDisableAllFields();
         } else {
           const error = await response.text();
           showErrorMessage("Error: " + error);
@@ -181,7 +199,7 @@ function AsideAddTask() {
           <label className="labels-task-priority" id="label-priority">
             Priority
           </label>
-          <PriorityButtons onSelectPriority={handleTaskPriority} />
+          <PriorityButtons onSelectPriority={handleTaskPriority} reset={resetPriority} />
           <label className="labels-task-dates" id="label-startDate">
             Start date
           </label>
