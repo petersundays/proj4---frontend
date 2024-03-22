@@ -18,7 +18,7 @@ function AsideAllTasks() {
     const [selectedUser, setSelectedUser] = useState('');
 
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
-    const message = "Are you sure you want to delete this category?";
+    const message = "Are you sure you want to delete this tasks?";
     
    
     useEffect(() => {
