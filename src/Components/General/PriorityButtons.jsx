@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './PriorityButtons.css';
 
-function PriorityButtons({ onSelectPriority, priority = null, taskErased }) {
+function PriorityButtons({ onSelectPriority, priority = null, taskErased, reset }) {
     const LOW = 100;
     const MEDIUM = 200;
     const HIGH = 300;
@@ -11,6 +11,12 @@ function PriorityButtons({ onSelectPriority, priority = null, taskErased }) {
     useEffect(() => {
         setSelectedPriority(priority);
     }, []);
+
+    useEffect(() => {
+        if (reset) {
+            setSelectedPriority(null);
+        }
+    }, [reset]);
 
     const handlePriority = (priorityValue) => {
         if (priorityValue === 'Low') {
@@ -22,7 +28,10 @@ function PriorityButtons({ onSelectPriority, priority = null, taskErased }) {
         } else if (priorityValue === 'High') {
             setSelectedPriority(HIGH);
             onSelectPriority(HIGH);
-        } 
+        } else {
+            setSelectedPriority(null);
+            onSelectPriority(null);
+        }
     };
 
     return (

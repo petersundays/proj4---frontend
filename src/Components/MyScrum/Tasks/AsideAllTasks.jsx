@@ -110,6 +110,25 @@ function AsideAllTasks() {
         }
     }
 
+    const handleRestoreAllTasks = async () => {
+        if (selectedUser === 'erased') {
+            await restoreAllTasks();
+        } else if (selectedUser !== '') {
+            await restoreAllTasksFromUser();
+        } else {
+            showErrorMessage('Please select a user to restore tasks.');
+        }
+    }
+
+    const handleEraseAllTasks = async () => {
+        if (selectedUser === 'erased') {
+           showErrorMessage('The selected tasks are already erased.');
+        } else if (selectedUser !== '') {
+            await eraseAllTasksFromUser();
+        } else {
+            await eraseAllTasks();
+        }
+    }
 
     const getErasedTasks = async () => {
         const getErasedTasks = `http://localhost:8080/backend_proj4_war_exploded/rest/users/erasedTasks`;
@@ -134,16 +153,68 @@ function AsideAllTasks() {
         }
     }
 
+
+    const eraseAllTasks = async () => {
+
+        const eraseAll = `http://localhost:8080/backend_proj4_war_exploded/rest/users/eraseAllTasks`;
+        try {
+            const response = await fetch(eraseAll, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                    token: token
+                }
+            });
+            if (response.ok) {
+                showSuccessMessage('Tasks erased successfully.');
+                const updatedTasks = await getAllTasks(token);
+                AllTasksStore.setState({ tasks: updatedTasks });
+            } else {
+                showErrorMessage('Failed to erase tasks. Please try again later.');
+            }
+        } catch (error) {
+            console.error('Error erasing tasks:', error);
+            showErrorMessage('Something went wrong. Please try again later.');
+        }
+    }
+
+    
     const eraseAllTasksFromUser = async () => {
 
-        if (selectedUser === '' || selectedUser === 'erased') {
-            showErrorMessage('Please select a user to erase tasks.');
-            return;
-        } else {
 
-            const eraseAll = `http://localhost:8080/backend_proj4_war_exploded/rest/users/eraseAllTasks/${selectedUser}`;
+        const eraseAllFromUser = `http://localhost:8080/backend_proj4_war_exploded/rest/users/eraseAllTasks/${selectedUser}`;
+        try {
+            const response = await fetch(eraseAllFromUser, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                    token: token
+                }
+            });
+            if (response.ok) {
+                showSuccessMessage('Tasks from ' + selectedUser.toUpperCase() + ' erased successfully.');
+                const updatedTasks = await getTasksFromUser(selectedUser, token);
+                AllTasksStore.setState({ tasks: updatedTasks });
+                                    
+            } else {
+                showErrorMessage('Failed to erase tasks. Please try again later.');
+            }
+        } catch (error) {
+            console.error('Error erasing tasks:', error);
+            showErrorMessage('Something went wrong. Please try again later.');
+        }
+
+    
+    }
+
+    const restoreAllTasks = async () => {
+
+        if (selectedUser === 'erased') {
+            const restoreAll = `http://localhost:8080/backend_proj4_war_exploded/rest/users/restoreAllTasks`;
             try {
-                const response = await fetch(eraseAll, {
+                const response = await fetch(restoreAll, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -152,20 +223,19 @@ function AsideAllTasks() {
                     }
                 });
                 if (response.ok) {
-                    showSuccessMessage('Tasks from ' + selectedUser.toUpperCase() + ' erased successfully.');
-                    const updatedTasks = await getTasksFromUser(selectedUser, token);
+                    showSuccessMessage('Tasks restored successfully.');
+                    const updatedTasks = await getErasedTasks();
                     AllTasksStore.setState({ tasks: updatedTasks });
-                                        
                 } else {
-                    showErrorMessage('Failed to erase tasks. Please try again later.');
+                    showErrorMessage('Failed to restore tasks. Please try again later.');
                 }
             } catch (error) {
-                console.error('Error erasing tasks:', error);
+                console.error('Error restoring tasks:', error);
                 showErrorMessage('Something went wrong. Please try again later.');
             }
-
         }
     }
+
 
     const restoreAllTasksFromUser = async () => {
 
@@ -173,7 +243,7 @@ function AsideAllTasks() {
             showErrorMessage('Please select a user to restore tasks.');
             return;
         } else {
-            const eraseAll = `http://localhost:8080/backend_proj4_war_exploded/rest/users/restoreAllTasks/${selectedUser}`;
+            const eraseAll = `http://localhost:8080/backend_proj4_war_exploded/rest/users/restoreAllTasksFromUser/${selectedUser}`;
             try {
                 const response = await fetch(eraseAll, {
                     method: 'PUT',
@@ -227,7 +297,7 @@ function AsideAllTasks() {
    
     const deleteAllErasedTasks = async () => {
 
-        const deleteAll = `http://localhost:8080/backend_proj4_war_exploded/rest/tasks`;
+        const deleteAll = `http://localhost:8080/backend_proj4_war_exploded/rest/users/tasks`;
         try {
             const response = await fetch(deleteAll, {
                 method: 'DELETE',
@@ -263,9 +333,9 @@ function AsideAllTasks() {
                         {createSelectOptions()}
                     </select>
                     <div id='category-buttons-container'>
-                        <Button text="Erase All" width="94px" onClick={eraseAllTasksFromUser}></Button>
-                        <Button text="Restore All" width="94px" onClick={restoreAllTasksFromUser}></Button>
-                        <Button text="Delete All" width="94px" /* hidden={selectedUser!=='erased' ? true : false } */ onClick={handleDisplayConfirmationModal}></Button>
+                        <Button text="Erase All" width="94px" onClick={handleEraseAllTasks}></Button>
+                        <Button text="Restore All" width="94px" onClick={handleRestoreAllTasks}></Button>
+                        <Button text="Delete All" width="94px" onClick={handleDisplayConfirmationModal}></Button>
                     </div>
                 </div>
             </aside>
