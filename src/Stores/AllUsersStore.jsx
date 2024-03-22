@@ -5,6 +5,8 @@ export const AllUsersStore = create(
     persist(
         (set) => ({
             users: [],
+            displayContainer: false,
+            newUser: false,
             addUser: (user) => {
                 set((state) => ({
                     users: [...state.users, user],
@@ -24,6 +26,12 @@ export const AllUsersStore = create(
                         return user;
                     }),
                 }));
+            },
+            setDisplayContainer: (value) => { 
+                set({ displayContainer: value });
+            },
+            setNewUser: (value) => { 
+                set({ newUser: value });
             },
         }),
         {

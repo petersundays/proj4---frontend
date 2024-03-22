@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import './RegisterContainer.css';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessMessage } from '../../functions/Messages/SuccessMessage';
 import { showErrorMessage } from '../../functions/Messages/ErrorMessage';
-import { showWarningMessage } from '../../functions/Messages/WarningMessage';
+import { RegisterUser } from '../../functions/Users/RegisterUser';
 
 function registerContainer() {
 
@@ -32,71 +31,11 @@ function registerContainer() {
         }));
     }
 
-    const validateInput = () => {
-
-        const valid = true;
-
-        if (input.username === "" || input.password === "" || input.passwordConfirm === "" || input.email === "" || input.firstName === "" || input.lastName === "" || input.phone === "" || input.photoURL === "") {
-            document.getElementById("warningMessage4").innerHTML = "All fields are required";
-            return;
-        } else {
-            if ((!/^[a-zA-Z0-9._-]+$/.test(input.username))) {
-                document.getElementById("warningMessage4").innerHTML = "Username can only contain letters, numbers, and the following characters: . _ -";
-                return;
-            } else {
-                if (!/^[a-zA-Z0-9._-]+$/.test(input.password)) {
-                    document.getElementById("warningMessage4").innerHTML = "Password can only contain letters, numbers, and the following characters: . _ -";
-                    return;
-                } else {
-                    if (input.password !== input.passwordConfirm) {
-                        document.getElementById("warningMessage4").innerHTML = "Passwords do not match";
-                        return;
-                    } else {
-                        if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(input.email)) {
-                            document.getElementById("warningMessage4").innerHTML = "Invalid email";
-                            return;
-                        } else {
-                            if (!/^[a-zA-Z]+$/.test(input.firstName)) {
-                                document.getElementById("warningMessage4").innerHTML = "First name can only contain letters";
-                                return;
-                            } else {
-                                if (!/^[a-zA-Z]+$/.test(input.lastName)) {
-                                    document.getElementById("warningMessage4").innerHTML = "Last name can only contain letters";
-                                    return;
-                                } else {
-                                    if (!/^[0-9]+$/.test(input.phone)) {
-                                        document.getElementById("warningMessage4").innerHTML = "Phone can only contain numbers";
-                                        return;
-                                    } else {
-                                        if (!/^(http|https):\/\/[^ "]+$/.test(input.photoURL)) {
-                                            document.getElementById("warningMessage4").innerHTML = "Invalid URL";
-                                            return;
-                                        } else {
-                                            return valid;     
-                                        }                               
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-
-
     const handleRegisterSubmit = async (event) => {
-        event.preventDefault();
-
-        const registerRequest = "http://localhost:8080/backend_proj4_war_exploded/rest/users/register";
-
-        let newUser = {};
-
-        if (!validateInput()) {
-            return;
-        } else {
-            newUser = {
+        
+        let backToLoginLink = false;
+            event.preventDefault();
+            const newUser = {
                 username: input.username,
                 password: input.password,
                 email: input.email,
@@ -105,32 +44,18 @@ function registerContainer() {
                 phone: input.phone,
                 photoURL: input.photoURL
             };
-            document.getElementById("warningMessage4").innerHTML = "";
 
-            try {
-                const response = await fetch(registerRequest, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': '*/*'
-                    },
-                    body: JSON.stringify(newUser)
-                });
-
-                if (response.ok) {
-                    navigate('/');
-                    showSuccessMessage('Registration successful');
-                } else if (response.status === 409) {
-                    showWarningMessage("Username already in use");
-                } else {
-                    const error = await response.text();
-                    showErrorMessage(error);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showErrorMessage("Something went wrong. Please try again later.");
-            }
+        try {
+            await RegisterUser(event, newUser);
+            backToLoginLink = true;
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorMessage("Something went wrong. Please try again later.");
         }
+        if (backToLoginLink) {
+            navigate('/');
+        }
+        
     }
 
 
