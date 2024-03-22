@@ -30,7 +30,7 @@ function AllTasks() {
     };
 
     return (
-        <TasksContainer tasks={tasks} />
+        <TasksContainer />
     );
 }
 
