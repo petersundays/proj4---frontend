@@ -7,6 +7,8 @@ export const AllUsersStore = create(
             users: [],
             displayContainer: false,
             newUser: false,
+            selectedUser: '',
+            userType: '',
             addUser: (user) => {
                 set((state) => ({
                     users: [...state.users, user],
@@ -32,6 +34,12 @@ export const AllUsersStore = create(
             },
             setNewUser: (value) => { 
                 set({ newUser: value });
+            },
+            setSelectedUser: (value) => {
+                set({ selectedUser: value });
+            },
+            setUserType: (value) => {
+                set({ userType: value });
             },
         }),
         {

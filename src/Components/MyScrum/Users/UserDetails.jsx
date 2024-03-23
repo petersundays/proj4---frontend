@@ -130,8 +130,8 @@ export function UserDetails () {
             }
 
             try {
-                await RegisterUser(event, userToRegister);
-                registredSuccessfully = true;
+                registredSuccessfully = await RegisterUser(event, userToRegister);
+                
             } catch (error) {
                 console.error('Error:', error);
                 showErrorMessage("Something went wrong. Please try again later.");
@@ -139,12 +139,13 @@ export function UserDetails () {
 
             if (registredSuccessfully) {
                 if (newUser) {
-                    setNewUser(false);
+                    
                     AllUsersStore.getState().setNewUser(false);
-                    setDisplayContainer(false);
                     AllUsersStore.getState().setDisplayContainer(false);
-                    clearInputs();
                     AllUsersStore.getState().addUser(userToRegister);
+                    setNewUser(false);
+                    setDisplayContainer(false);
+                    clearInputs();
                 }
             }
         }
