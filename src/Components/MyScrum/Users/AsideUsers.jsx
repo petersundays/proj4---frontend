@@ -7,10 +7,15 @@ import { getAllUsers } from '../../../functions/Users/GetAllUsers.js';
 
 function AsideUsers() {
 
+    const DEVELOPER = 100;
+    const SCRUM_MASTER = 200;
+    const PRODUCT_OWNER = 300;
+
     const token = UserStore.getState().user.token;
     const [users, setUsers] = useState(AllUsersStore.getState().users);
     const [userSearch, setUserSearch] = useState('');
     const [selectedUser, setSelectedUser] = useState('');
+    const [userType, setUserType] = useState(''); 
     const [newUser, setNewUser] = useState('false');
     const [displayContainer, setDisplayContainer] = useState(AllUsersStore.getState().displayContainer); 
 
@@ -21,17 +26,40 @@ function AsideUsers() {
         setDisplayContainer(true);
         AllUsersStore.getState().setDisplayContainer(true);
     }
-    
-
-
 
     useEffect(() => {
         getAllUsersFromServer(); 
         AllUsersStore.subscribe((state) => {
             setUsers(state.users);
         });
+    }, [selectedUser, userType]);
+
+    useEffect(() => {
+        if (selectedUser !== '') {
+            setUserType('');
+        }
+    }, [selectedUser]);
+
+    useEffect(() => {
+        setSelectedUser('');
+        AllUsersStore.getState().setSelectedUser('');
     }, []);
 
+    useEffect(() => {
+    AllUsersStore.getState().setUserType(userType);
+}, [userType]);
+
+useEffect(() => {
+    const unsubscribe = AllUsersStore.subscribe((state) => {
+        setUsers(state.users);
+        setSelectedUser(state.selectedUser);
+        setUserType(state.userType);
+        setDisplayContainer(state.displayContainer);
+    });
+
+    // Unsubscribe when the component unmounts
+    return () => unsubscribe();
+}, []);
 
     const getAllUsersFromServer = async () => {
         try {
@@ -53,12 +81,25 @@ function AsideUsers() {
             const matchingUser = users.find(user => user.username.toLowerCase().includes(searchValue.toLowerCase()));
             if (matchingUser) {
                 setSelectedUser(matchingUser.username);
+                AllUsersStore.getState().setSelectedUser(matchingUser.username);
             }
         }
     }
 
     const handleUserChange = async (e) => {
         setSelectedUser(e.target.value);
+        console.log('SET SELECTED USER ', selectedUser);
+        AllUsersStore.getState().setSelectedUser(e.target.value);
+        setUserType('');
+    }
+
+    const handleUserTypeChange = (e) => {
+        setUserType(e.target.value);        
+        console.log('SET USER TYPE ', userType);
+        if (e.target.value !== '') {
+            setSelectedUser('');
+            AllUsersStore.getState().setSelectedUser('');
+        }
     }
 
     const createSelectOptions = () => {
@@ -82,27 +123,19 @@ function AsideUsers() {
             <aside>
                 <div className="aside-users-container">
                     <h3 id="addTask-h3">Users</h3>
-                    {/* <label className="usersType">Type</label>
-                    <select className='usersType-select' id="usersType" name="usersType">
-                        <option value="All">All</option>
-                        <option value="300">Product Owners</option>
-                        <option value="200">Scrum Masters</option>
-                        <option value="100">Developers</option>
+                    <label className="labels-search-username" id="label-search-username"> Search by username</label>
+                    <input type="search" id="search-input" placeholder="User" onChange={handleUserSearch} />
+                    <select id="select-username" value={selectedUser} onChange={handleUserChange} required>
+                        <option value="">All users</option>
+                        {createSelectOptions()} 
                     </select>
                     <div className="spacebetween-users"></div>
-                    <label className="usersVisibility">Visibility</label>
-                    <select id="usersVisibility" name="usersVisibility" >
-                        <option value="All" disabled selected>Select an option</option>
-                        <option value="All">All</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
-                    </select>
-                    <Button text="Search"/>
- */}
-                    <input type="search" id="search-input" placeholder="User" onChange={handleUserSearch} />
-                    <select id="task-category" value={selectedUser} onChange={handleUserChange} required>
-                        <option value="" >All users</option>
-                        {createSelectOptions()} 
+                    <label className="labels-user-role" id="label-user-role"> Search by role</label>
+                    <select id="user-type" value={userType} onChange={handleUserTypeChange} required>
+                        <option value="" >All</option>
+                        <option value={DEVELOPER} >Developer</option>
+                        <option value={SCRUM_MASTER} >Scrum Master</option>
+                        <option value={PRODUCT_OWNER} >Product Owner</option>
                     </select>
                         <Button text="Register New User" width="180px" onClick={handleNewUser} ></Button>
                 </div>

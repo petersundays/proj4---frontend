@@ -3,27 +3,114 @@ import './UsersContainer.css';
 import { useEffect, useState } from 'react';
 import { UserStore } from '../../../Stores/UserStore';
 import { AllUsersStore } from '../../../Stores/AllUsersStore';
-import {ConfirmationModal} from '../../General/ConfirmationModal';
+import { ConfirmationModal } from '../../General/ConfirmationModal';
 import { UserDetails } from './UserDetails';
+import { getTasksFromUser } from '../../../functions/Tasks/GetTasksFromUser.js';
+
 
 function UsersContainer() {
 
     const token = UserStore.getState().user.token;
 
+    const DEVELOPER = 100;
+    const SCRUM_MASTER = 200;
+    const PRODUCT_OWNER = 300;
+
     const [displayContainer, setDisplayContainer] = useState(false);
     const [newUser, setNewUser] = useState(AllUsersStore.getState().newUser);
+    const [users, setUsers] = useState(AllUsersStore.getState().users);
+    const [selectedUser, setSelectedUser] = useState(AllUsersStore.getState().selectedUser);
+    const [userType, setUserType] = useState(AllUsersStore.getState().userType);
+    const [userTasks, setUserTasks] = useState(undefined); 
 
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
     const message = "Are you sure you want to delete this category?";
 
+    useEffect(() => {
+        async function fetchUsers() {
+            const tasks = await getTasksFromUser(selectedUser.username, token);
+            setUserTasks(tasks.length);
+        }
+        fetchUsers();
+    }, [selectedUser]);
+    
+    useEffect(() => {
+        AllUsersStore.getState().setUserType(userType);
+    }, [userType]);
+    useEffect(() => {
+        const unsubscribe = AllUsersStore.subscribe((state) => {
+            setUsers(state.users);
+            setSelectedUser(state.selectedUser);
+            setUserType(state.userType);
+            setNewUser(state.newUser);
+        });
+    
+        // Unsubscribe when the component unmounts
+        return () => unsubscribe();
+    }, []);
+
+
+
+
 
     // Chamar de cada vez que se clicar numa linha da tabela
-    const handleNewUser = () => {
+    const showProfileDetails = () => {
         if (newUser) {
             setNewUser(false);
             AllUsersStore.getState().setNewUser(false);
-
         }
+        setDisplayContainer(true);
+    }
+    const handleDisplayConfirmationModal = () => {
+        setDisplayConfirmationModal(!displayConfirmationModal);
+    }
+
+    const convertTypeOfUserToString = (type) => {
+        switch (type) {
+            case DEVELOPER:
+                return 'Developer';
+            case SCRUM_MASTER:
+                return 'Scrum Master';
+            case PRODUCT_OWNER:
+                return 'Product Owner';
+            default:
+                return 'Undefined';
+        }
+    }
+
+    const getUsersToDisplay = () => {
+        let filteredUsers = users;
+
+        /* console.log('users:', users);
+        console.log('selectedUser:', selectedUser);
+        console.log('userType:', userType);
+         */
+    
+        if (selectedUser !== '') {
+            filteredUsers = filteredUsers.filter(user => user.username === selectedUser);
+        }
+    
+        if (userType !== '') {
+            filteredUsers = filteredUsers.filter(user => user.typeOfUser === userType);
+        }
+    
+        return filteredUsers.map(user => (
+            <tr key={user.username}>
+                <td><img src={user.photoURL} alt="" /></td>
+                <td>{user.username}</td>
+                <td>{user.firstName}</td>
+                <td>{user.lastName}</td>
+                <td>{user.email}</td>
+                <td>{convertTypeOfUserToString(user.typeOfUser)}</td>
+                <td>{userTasks}</td>
+                <td>
+                    <div className='buttons-container'>
+                        <img src={user.erased ? '../../../multimedia/hide.png' : '../../../multimedia/show.png'} id="hide-show" onClick={handleDisplayConfirmationModal} />
+                        <img src='../../../multimedia/deleteUser.png' id="hide-show" hidden={user.erased ? false : true} onClick={handleDisplayConfirmationModal} />
+                    </div>
+                </td>
+            </tr>
+        ));
     }
 
     return (
@@ -35,6 +122,7 @@ function UsersContainer() {
                         <table className="table">
                             <thead>
                                 <tr className="table-header">
+                                    <th></th>
                                     <th>Username</th>
                                     <th>First Name</th>
                                     <th>Last Name</th>
@@ -44,32 +132,12 @@ function UsersContainer() {
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="table-body"></tbody>
+                            <tbody className="table-body">
+                                {getUsersToDisplay()}
+                            </tbody>
                         </table>
                     </div>
                 </div>
-                {/* <div className="users-details-container">
-                    <img src="/multimedia/user-avatar.jpg" id="profile-clicked-pic" alt="Profile Pic" />
-                    <form id="edit-user-form">
-                        <label className="labels-edit-profile" id="email-editProfile-label">Email</label>
-                        <input type="email" className="editUser-fields" id="email-editUser" name="email" placeholder="admin@admin.com"/>
-                        <label className="labels-edit-profile" id="first name-editProfile-label">First Name</label>
-                        <input type="text" className="editUser-fields" id="first name-editUser" name="first name" placeholder="admin"/>
-                        <label className="labels-edit-profile" id="last name-editProfile-label">Last Name</label>
-                        <input type="text" className="editUser-fields" id="last name-editUser" name="last name" placeholder="admin"/>
-                        <label className="labels-edit-profile" id="phone-editProfile-label">Phone</label>
-                        <input type="text" className="editUser-fields" id="phone-editUser" name="phone" placeholder="123456789"/>
-                        <label className="labels-edit-profile" id="photo url-editProfile-label">Photo URL</label>
-                        <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder="https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"/>
-                        <select id="select_role">
-                            <option disabled="" value="" id="user_role_loaded"></option>
-                            <option value="100" id="Developer">Developer</option>
-                            <option value="200" id="Scrum Master">Scrum Master</option>
-                            <option value="300" id="Product Owner">Product Owner</option>
-                        </select>
-                        <Button text="Save" />
-                    </form>
-                </div> */}
                 { <UserDetails displayContainer={displayContainer} /> }
             </main>
         </>

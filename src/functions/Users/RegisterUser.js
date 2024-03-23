@@ -20,14 +20,18 @@ export const RegisterUser = async (event, newUser) => {
 
             if (response.ok) {
                 showSuccessMessage('Registration successful');
+                return true;
             } else if (response.status === 409) {
                 showWarningMessage("Username already in use");
+                return false;
             } else {
                 const error = await response.text();
                 showErrorMessage(error);
+                return false;
             }
         } catch (error) {
             console.error('Error:', error);
             showErrorMessage("Something went wrong. Please try again later.");
+            return false;
         }
 }

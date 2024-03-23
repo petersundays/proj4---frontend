@@ -83,6 +83,8 @@
   #label-startDate,
   #label-limitDate,
   #label-category,
+  #label-search-username,
+  #label-user-role,
   .usersType,
   .usersVisibility {
     margin-block: 20px;
@@ -100,7 +102,8 @@
 
   #task-startDate,
   #task-limitDate,
-  #task-category {
+  #task-category,
+  #user-type {
       margin-inline: 20px;
       text-align: center;
       margin-block: 10px;
@@ -112,6 +115,19 @@
       color: color-mix(in srgb, var(--green3), var(--white) 40%);
       font-size: 14px;
       border: var(--green3) 2px solid;
+  }
+  #select-username{
+    margin-inline: 40px;
+    text-align: center;
+    margin-block: 10px;
+    width: 180px;
+    height: 25px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-weight: lighter;
+    color: color-mix(in srgb, var(--green3), var(--white) 40%);
+    font-size: 14px;
+    border: var(--green3) 2px solid;
   }
   /* Botão add task */
   #addTask {
@@ -154,7 +170,7 @@
     margin-top: 50px;
   }
   .spacebetween-users {
-    height: 15px;
+    height: 25px;
   }
 
   #category-buttons-container {
