@@ -4,6 +4,7 @@ import Button from '../../General/Button';
 import './UserDetails.css';
 import { RegisterUser } from '../../../functions/Users/RegisterUser';
 import { showErrorMessage } from '../../../functions/Messages/ErrorMessage';
+import userAvatar from '../../../../multimedia/user-avatar.jpg';
 
 export function UserDetails () {
 
@@ -14,12 +15,15 @@ export function UserDetails () {
     const SCRUM_MASTER = 200;
     const PRODUCT_OWNER = 300;
 
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
-    const [photoUrl, setPhotoUrl] = useState('');
-    const [role, setRole] = useState(DEVELOPER);
+    const [photoUrl, setPhotoUrl] = useState(userAvatar);
+    const [role, setRole] = useState(undefined);
 
 
     useEffect(() => {
@@ -33,6 +37,15 @@ export function UserDetails () {
     const handleInputs = (e) => {
         const { name, value } = e.target;
         switch (name) {
+            case 'username':
+                setUsername(value);
+                break;
+            case 'password':
+                setPassword(value);
+                break;
+            case 'confirmPassword':
+                setConfirmPassword(value);
+                break;
             case 'email':
                 setEmail(value);
                 break;
@@ -63,58 +76,76 @@ export function UserDetails () {
         }
     }
 
+    const handlePhotoURLChange = (e) => {
+        const newPhotoURL = e.target.value;
+        const img = new Image();
+
+        img.src = newPhotoURL;
+        img.onload = () => {
+            setPhotoUrl(newPhotoURL);
+        };
+        img.onerror = () => {
+            
+                
+                setPhotoUrl(userAvatar);
+
+        
+        };
+    };
+
+    const handlePhotoUrlAndInputChange = (e) => {
+        handleInputs(e);
+        handlePhotoURLChange(e);
+    };
+
     const clearInputs = () => {
         setEmail('');
         setFirstName('');
         setLastName('');
         setPhone('');
         setPhotoUrl('');
-        setRole(null);
+        setRole(undefined);
     }
 
 
     const handleSaveButton = async (event) => {
         event.preventDefault();
-        console.log('Role:', role);
+
         let registredSuccessfully = false;
-        
-        //MUDAR ISTO!!!!
-        
-        const username = email.split('@')[0];
-        const password = '123456'; //MUDAR ISTO!!!!
+    
+        if (password !== confirmPassword) {
+            showErrorMessage("Passwords don't match.");
+            return;
+        } else {
 
-        //MUDAR ISTO!!!!
-        
+            const userToRegister = {
+                username: username,
+                password: password,
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone,
+                photoURL: photoUrl,
+                typeOfUser: role
+            }
 
-        const userToRegister = {
-            username: username,
-            password: password,
-            email: email,
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone,
-            photoURL: photoUrl,
-            typeOfUser: role
-        }
+            try {
+                await RegisterUser(event, userToRegister);
+                registredSuccessfully = true;
+            } catch (error) {
+                console.error('Error:', error);
+                showErrorMessage("Something went wrong. Please try again later.");
+            }
 
-        console.log(userToRegister);
-
-        try {
-            await RegisterUser(event, userToRegister);
-            registredSuccessfully = true;
-        } catch (error) {
-            console.error('Error:', error);
-            showErrorMessage("Something went wrong. Please try again later.");
-        }
-        console.log('Registred:', registredSuccessfully);
-        if (registredSuccessfully) {
-            if (newUser) {
-                setNewUser(false);
-                AllUsersStore.getState().setNewUser(false);
-                setDisplayContainer(false);
-                AllUsersStore.getState().setDisplayContainer(false);
-                clearInputs();
-                AllUsersStore.getState().addUser(userToRegister);
+            if (registredSuccessfully) {
+                if (newUser) {
+                    setNewUser(false);
+                    AllUsersStore.getState().setNewUser(false);
+                    setDisplayContainer(false);
+                    AllUsersStore.getState().setDisplayContainer(false);
+                    clearInputs();
+                    AllUsersStore.getState().addUser(userToRegister);
+                }
             }
         }
     }
@@ -131,9 +162,15 @@ export function UserDetails () {
 
     return (
         <div className={ `users-details-container ${!displayContainer ? 'hidden' : ''}` }>
-            <h3 id="label-user-details" >{newUser ? "Register New User" : ''}</h3>
-            <img src="/multimedia/user-avatar.jpg" id="profile-clicked-pic" alt="Profile Pic" />
+            <h3 id="label-title" >{newUser ? "Register New User" : ''}</h3>
+            <img src={photoUrl} id="profile-clicked-pic" alt="Profile Pic" />
             <form id="edit-user-form">
+                <label className="labels-edit-profile" id="username-editProfile-label" >Username</label>
+                <input type="text" className="editUser-fields" id="username-editUser" name="username" placeholder={newUser ? "Username" : ''} onChange={handleInputs} value={username}/>
+                <label className="labels-edit-profile" id="password-editProfile-label">Password</label>
+                <input type="password" className="editUser-fields" id="confirmPassword-editUser" name="password" placeholder={newUser ? "Password" : ''} onChange={handleInputs} value={password}/>
+                <label className="labels-edit-profile" id="confirmPassword-editProfile-label">Confirm Password</label>
+                <input type="password" className="editUser-fields" id="confirmPassword-editUser" name="confirmPassword" placeholder={newUser ? "Confirm Password" : ''} onChange={handleInputs} value={confirmPassword}/>
                 <label className="labels-edit-profile" id="email-editProfile-label" >Email</label>
                 <input type="email" className="editUser-fields" id="email-editUser" name="email" placeholder={newUser ? "Email" : ''} onChange={handleInputs} value={email}/>
                 <label className="labels-edit-profile" id="first name-editProfile-label">First Name</label>
@@ -143,7 +180,7 @@ export function UserDetails () {
                 <label className="labels-edit-profile" id="phone-editProfile-label">Phone</label>
                 <input type="text" className="editUser-fields" id="phone-editUser" name="phone" placeholder={newUser ? "Phone" : ''} onChange={handleInputs} value={phone}/>
                 <label className="labels-edit-profile" id="photo url-editProfile-label">Photo URL</label>
-                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? "Profile Picture" : ''} onChange={handleInputs} value={photoUrl}/>
+                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? userAvatar : ''} onChange={handlePhotoUrlAndInputChange} value={photoUrl}/>
                 <select id="select_role" name="role" onChange={handleInputs} value={role}>
                     <option disabled="" value="" id="user_role_loaded" ></option>
                     <option value="100" id="Developer">Developer</option>

@@ -1,10 +1,7 @@
 #select_role {
-    margin: 10px;
     border: var(--green3) 2px solid;
-    margin-bottom: 15px;
     padding: 5px;
     width: 53%;
-    height: 8%;
     border-top-right-radius: 7px;
     border-top-left-radius: 7px;
   }
@@ -15,7 +12,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 2%;
   }
 
   .details-editProfile {
@@ -30,7 +26,7 @@
     margin-bottom: 15px;
     padding: 5px;
     width: 50%;
-    height: 25px;
+    height: 15px;
     background-color: var(--white);
     font-size: 12px;
     border: var(--green3) 2px solid;
@@ -50,7 +46,14 @@
   margin-top: 10px;
   text-align: center;
   color: var(--green3);
-  font-size: 20px;
+  font-size: 10px;
+}
+#label-title {
+  text-align: center;
+  color: var(--green3);
+  font-size: 20px; 
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
   
@@ -58,8 +61,7 @@
     width: 84px;
     height: 84px;
     border-radius: 50%;
-    margin: 0 30px;
-    margin-bottom: 10%;
+   
     object-fit: cover;
   }
 
