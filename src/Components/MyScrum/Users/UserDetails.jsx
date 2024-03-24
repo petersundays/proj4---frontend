@@ -112,8 +112,7 @@ export function UserDetails () {
         };
         img.onerror = () => {
             
-                
-                setPhotoUrl(userAvatar);
+            setPhotoUrl("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTWfm4QX7YF7orMboLv4jjuwoYgd85bKBqeiBHLOfS6MgfHUW-d");
        
         };
     };
@@ -124,16 +123,19 @@ export function UserDetails () {
     };
 
     const clearInputs = () => {
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
         setEmail('');
         setFirstName('');
         setLastName('');
         setPhone('');
         setPhotoUrl('');
-        setRole(undefined);
+        setRole("100");
     }
 
     const areInputsUnchanged = () => {
-        return email === '' && firstName === '' && lastName === '' && phone === '' && photoUrl === '' && role === undefined;
+        return email === '' && firstName === '' && lastName === '' && phone === '' && role === undefined;
     }
 
     const inputsThatChanged = () => {
@@ -205,7 +207,7 @@ export function UserDetails () {
     const handleSaveButton = async (e) => {
         e.preventDefault();
         if (newUser) {
-            await registerNewUser();
+            await registerNewUser(e);
         } else {
             await handleSubmitProfileChanges(e);
         }
@@ -220,6 +222,10 @@ export function UserDetails () {
             showErrorMessage("Passwords don't match.");
             return;
         } else {
+
+            if (photoUrl === '' || photoUrl === undefined) {
+                setPhotoUrl('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTWfm4QX7YF7orMboLv4jjuwoYgd85bKBqeiBHLOfS6MgfHUW-d');
+            }
 
             const userToRegister = {
                 username: username,
@@ -241,15 +247,14 @@ export function UserDetails () {
             }
 
             if (registredSuccessfully) {
-                if (newUser) {
-                    
-                    AllUsersStore.getState().setNewUser(false);
-                    AllUsersStore.getState().setDisplayContainer(false);
-                    AllUsersStore.getState().addUser(userToRegister);
-                    setNewUser(false);
-                    setDisplayContainer(false);
-                    clearInputs();
-                }
+                const userRegistred = await getUserByUsername(token, username);
+                AllUsersStore.getState().addUser(userRegistred);
+                AllUsersStore.getState().setNewUser(false);
+                AllUsersStore.getState().setDisplayContainer(false);
+                setNewUser(false);
+                setDisplayContainer(false);
+                clearInputs();
+                
             }
         }
     }
@@ -286,8 +291,7 @@ export function UserDetails () {
                     updateUserToEdit(updatedUser);
                     AllUsersStore.getState().updateUser(userToEdit);
                     AllUsersStore.getState().setDisplayContainer(false);
-                    console.log(userToEdit);
-                    console.log(firstName, lastName, email, phone, photoUrl, role);
+             
 
                 } else {
                     const error = await response.text();
@@ -322,9 +326,9 @@ export function UserDetails () {
                 <label className="labels-edit-profile" id="phone-editProfile-label">Phone</label>
                 <input type="text" className="editUser-fields" id="phone-editUser" name="phone" placeholder={newUser ? "Phone" : userToEdit.phone} onChange={handleInputs} value={phone}/>
                 <label className="labels-edit-profile" id="photo url-editProfile-label">Photo URL</label>
-                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? userAvatar : userToEdit.photoURL} onChange={handlePhotoUrlAndInputChange} value={newUser ? userAvatar : userToEdit.photoURL} />
+                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? "photoUrl" : userToEdit.photoURL} onChange={handlePhotoUrlAndInputChange} value={newUser ? photoUrl : userToEdit.photoURL} />
                 <select id="select_role" name="role" onChange={handleInputs} value={role}>
-                    <option disabled="" value="" id="user_role_loaded" ></option>
+                    <option disabled="" value="undefined" id="user_role_loaded" ></option>
                     <option value="100" id="Developer" selected={userToEdit.typeOfUser === DEVELOPER}>Developer</option>
                     <option value="200" id="Scrum Master" selected={userToEdit.typeOfUser === SCRUM_MASTER}>Scrum Master</option>
                     <option value="300" id="Product Owner" selected={userToEdit.typeOfUser === PRODUCT_OWNER}>Product Owner</option>

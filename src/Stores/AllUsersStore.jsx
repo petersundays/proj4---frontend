@@ -15,9 +15,9 @@ export const AllUsersStore = create(
                     users: [...state.users, user],
                 }));
             },
-            removeUser: (userId) => {
+            removeUser: (username) => {
                 set((state) => ({
-                    users: state.users.filter((user) => user.id !== userId),
+                    users: state.users.filter((user) => user.username !== username),
                 }));
             },
             updateUser: (updatedUser) => {

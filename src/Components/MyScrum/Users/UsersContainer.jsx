@@ -26,7 +26,8 @@ function UsersContainer() {
     const [userType, setUserType] = useState(AllUsersStore.getState().userType);
 
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
-    const message = "Are you sure you want to delete this category?";
+    const [userToDelete, setUserToDelete] = useState({});
+    const message = "Are you sure you want to permanently delete this user?";
 
    
     
@@ -54,9 +55,22 @@ function UsersContainer() {
     }
     
 
-    const handleDisplayConfirmationModal = () => {
+    const handleDisplayConfirmationModal = (e, user) => {
+        e.stopPropagation();
+        setUserToDelete(user);
         setDisplayConfirmationModal(!displayConfirmationModal);
     }
+
+    const handleVisibilityButton = async (e, user) => {
+        e.stopPropagation();
+        changeVisibilityOfUser(user);
+    }
+
+    const handleDeleteButton = async (e) => {
+        e.stopPropagation();
+        await permenantlyDeleteUser(userToDelete);
+    }
+
 
     const convertTypeOfUserToString = (type) => {
         switch (type) {
@@ -93,23 +107,17 @@ function UsersContainer() {
                 <td>{user.numberOfTasks}</td>
                 <td>
                     <div className='buttons-container'>
-                        <img src={user.erased ? '../../../multimedia/hide.png' : '../../../multimedia/show.png'} id="hide-show" onClick={(e) => handleVisibilityButton(e, user)} />
-                        <img src='../../../multimedia/deleteUser.png' id="hide-show" hidden={user.erased ? false : true} onClick={handleDisplayConfirmationModal} />
+                        <img src={user.visible ? '../../../multimedia/hide.png' : '../../../multimedia/show.png' } id="hide-show" onClick={(e) => handleVisibilityButton(e, user)} />
+                        <img src='../../../multimedia/deleteUser.png' id="hide-show" hidden={user.visible ? true : false} onClick={(e) => handleDisplayConfirmationModal(e, user)} />
                     </div>
                 </td>
             </tr>
         ));
     }
 
-    const handleVisibilityButton = async (e, user) => {
-        e.stopPropagation();
-        changeVisibilityOfUser(user);
-    }
 
     const changeVisibilityOfUser = async (user) => {
-
-        console.log('User before update', user);
-        
+       
         const username = user.username;
 
         const changeVisibility = `http://localhost:8080/backend_proj4_war_exploded/rest/users/update/${username}/visibility`;
@@ -126,12 +134,11 @@ function UsersContainer() {
 
             if (response.ok) {
                 const feedback = await response.text();
-                const updatedUser = await getUserByUsername(username, token);
+                const updatedUser = await getUserByUsername(token, username);
                 showSuccessMessage(feedback);
                 AllUsersStore.getState().updateUser(updatedUser);
+                AllUsersStore.getState().setDisplayContainer(false);
 
-                console.log('User visibility changed');
-                console.log('User after update', user);
             } else {
                 console.log('Error', response.status);
                 showErrorMessage("Failed to change user's visibility. Please try again later.");
@@ -143,9 +150,40 @@ function UsersContainer() {
         }
     }
  
+
+    const permenantlyDeleteUser = async (user) => {
+        const username = user.username;
+        const deleteUser = `http://localhost:8080/backend_proj4_war_exploded/rest/users/${username}`;
+
+        try {
+            const response = await fetch(deleteUser, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                    token: token
+                }
+            });
+
+            if (response.ok) {
+                const feedback = await response.text();
+                showSuccessMessage(feedback);
+                AllUsersStore.getState().removeUser(username);
+                AllUsersStore.getState().setDisplayContainer(false);
+                AllUsersStore.getState().setDisplayContainer(false);
+            } else {
+                console.log('Error', response.status);
+                showErrorMessage("Failed to delete user. Please try again later.");
+            }
+        }
+        catch (error) {
+            console.log(error);
+            showErrorMessage("Failed to delete user. Please try again later.");
+        }
+    }
+
     return (
         <>
-            <ConfirmationModal /* onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message}*/ displayModal={displayConfirmationModal}  />
             <main className="main-users">
                 <div className="details-editProfile">
                     <div className="container-table">
@@ -170,6 +208,7 @@ function UsersContainer() {
                 </div>
                 { displayContainer && <UserDetails /> }
             </main>
+            <ConfirmationModal onConfirm={handleDeleteButton} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal}  />
         </>
     )
 }
