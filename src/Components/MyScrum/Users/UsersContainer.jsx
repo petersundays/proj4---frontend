@@ -42,10 +42,10 @@ function UsersContainer() {
     }, []);
 
 
-    const handleRowClick = (user) => {
+    const handleRowClick = (username) => {
         setNewUser(false);
         AllUsersStore.getState().setNewUser(false);
-        AllUsersStore.getState().setUserToEdit(user);
+        AllUsersStore.getState().setUserToEdit(username);
         setDisplayContainer(true);
         AllUsersStore.getState().setDisplayContainer(true);
     }
@@ -80,7 +80,7 @@ function UsersContainer() {
         }
     
         return filteredUsers.map(user => (
-            <tr key={user.username} onClick={() => handleRowClick(user)}>
+            <tr key={user.username} onClick={() => handleRowClick(user.username)}>
                 <td><img src={user.photoURL} alt="" /></td>
                 <td>{user.username}</td>
                 <td>{user.firstName}</td>
@@ -98,6 +98,13 @@ function UsersContainer() {
         ));
     }
 
+
+   /*  const changeVisibilityOfUser = async (user) => {
+
+        const username = user.username;
+
+        const changeVisibility = 
+ */
     return (
         <>
             <ConfirmationModal /* onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} */ />

@@ -43,7 +43,10 @@ export const AllUsersStore = create(
                 set({ userType: value });
             },
             setUserToEdit: (value) => {
-                set({ userToEdit: value });
+                set((state) => ({
+                    ...state,
+                    userToEdit: value
+                }));
             },
         }),
         {
