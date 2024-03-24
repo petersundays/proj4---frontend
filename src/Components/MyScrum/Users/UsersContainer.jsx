@@ -170,7 +170,7 @@ function UsersContainer() {
                 showSuccessMessage(feedback);
                 AllUsersStore.getState().removeUser(username);
                 AllUsersStore.getState().setDisplayContainer(false);
-                AllUsersStore.getState().setDisplayContainer(false);
+                AllUsersStore.getState().setDisplayConfirmationModal(false);
             } else {
                 console.log('Error', response.status);
                 showErrorMessage("Failed to delete user. Please try again later.");
