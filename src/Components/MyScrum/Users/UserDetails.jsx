@@ -29,7 +29,8 @@ export function UserDetails () {
     const [role, setRole] = useState(undefined);
 
     const userToEdit = AllUsersStore.getState().userToEdit;
-    const userToEditData = {
+   
+/*     const userToEditData = {
         username: userToEdit.username,
         email: userToEdit.email,
         firstName: userToEdit.firstName,
@@ -37,7 +38,7 @@ export function UserDetails () {
         phone: userToEdit.phone,
         photoURL: userToEdit.photoURL,
         typeOfUser: userToEdit.typeOfUser
-    }
+    } */
 
     useEffect(() => {
         const unsubscribe = AllUsersStore.subscribe((state) => {
@@ -128,27 +129,97 @@ export function UserDetails () {
 
     const inputsThatChanged = () => {
         let updatedUser = {};
-    
-        if (firstName !== userToEdit.firstName) {
+
+        if (email !== userToEdit.email && email !== '') {
+            updatedUser.email = email;
+        }    
+        if (firstName !== userToEdit.firstName && firstName !== '') {
             updatedUser.firstName = firstName;
         }
-        if (lastName !== userToEdit.lastName) {
+        if (lastName !== userToEdit.lastName && lastName !== '') {
             updatedUser.lastName = lastName;
         }
-        if (phone !== userToEdit.phone) {
+        if (phone !== userToEdit.phone && phone !== '') {
             updatedUser.phone = phone;
         }
-        if (photoUrl !== userToEdit.photoURL) {
+        if (photoUrl !== userToEdit.photoURL && photoUrl !== '') {
             updatedUser.photoURL = photoUrl;
-            console.log('photoUrl', photoUrl);
-            console.log('userToEdit.photoURL', userToEdit.photoURL);
         }
-        if (role !== userToEdit.typeOfUser) {
+        if (role !== userToEdit.typeOfUser && role !== undefined) {
             updatedUser.typeOfUser = role;
         }
     
         return updatedUser;
     };
+
+    /* const updateUserToRender = (user) => {
+
+        console.log('User to render: ', user);
+        console.log('User to edit: ', userToEditData);
+        
+        const userToRender = {};
+        userToRender.username = userToEditData.username;
+
+        if (user.email) {
+            userToRender.email = user.email;
+        } else {
+            userToRender.email = userToEditData.email;
+        }
+        if (user.firstName) {
+            userToRender.firstName = user.firstName;
+        } else {
+            userToRender.firstName = userToEditData.firstName;
+        }
+        if (user.lastName) {
+            userToRender.lastName = user.lastName;
+        } else {
+            userToRender.lastName = userToEditData.lastName;
+        }
+        if (user.phone) {
+            userToRender.phone = user.phone;
+        } else {
+            userToRender.phone = userToEditData.phone;
+        }
+        if (user.photoURL) {
+            userToRender.photoURL = user.photoURL;
+        } else {
+            userToRender.photoURL = userToEditData.photoURL;
+        }
+        if (user.typeOfUser) {
+            userToRender.typeOfUser = user.typeOfUser;
+        } else {
+            userToRender.typeOfUser = userToEditData.typeOfUser;
+        }
+
+        return userToRender;
+
+
+    } */
+
+    const updateUserToEdit = (user) => {
+
+        if (user.email) {
+            userToEdit.email = user.email;
+        }
+        if (user.firstName) {
+            userToEdit.firstName = user.firstName;
+        }
+        if (user.lastName) {
+            userToEdit.lastName = user.lastName;
+        }
+        if (user.phone) {
+            userToEdit.phone = user.phone;
+        }
+        if (user.photoURL) {
+            userToEdit.photoURL = user.photoURL;
+        }
+        if (user.typeOfUser) {
+            userToEdit.typeOfUser = user.typeOfUser;
+        }
+        
+        return userToEdit;
+    }
+        
 
     const handleCancelButton = () => {
         if (newUser) {
@@ -170,7 +241,6 @@ export function UserDetails () {
         if (newUser) {
             await registerNewUser();
         } else {
-            console.log('userToEditData', userToEditData);
             await handleSubmitProfileChanges(e);
         }
     }
@@ -243,13 +313,16 @@ export function UserDetails () {
                     body: JSON.stringify(updatedUser)
                 });
 
-                if (response.ok) {
-                    const user = await response.json();
-                    UserStore.getState().updateUser(updatedUser);
+                if (response.ok) {                
                     showSuccessMessage('Profile updated successfully');
                     clearInputs();
                     setDisplayContainer(false);
+                    updateUserToEdit(updatedUser);
+                    AllUsersStore.getState().updateUser(userToEdit);
                     AllUsersStore.getState().setDisplayContainer(false);
+                    console.log(userToEdit);
+                    console.log(firstName, lastName, email, phone, photoUrl, role);
+
                 } else {
                     const error = await response.text();
                     showErrorMessage('Error: ' + error);
@@ -265,8 +338,8 @@ export function UserDetails () {
 
     return (
         <div className={ `users-details-container ${!displayContainer ? 'hidden' : ''}` }>
-            <h3 id="label-title" >{newUser ? "Register New User" : userToEditData.username}</h3>
-            <img src={newUser ? userAvatar : userToEditData.photoURL} id="profile-clicked-pic" alt="Profile Pic" />
+            <h3 id="label-title" >{newUser ? "Register New User" : userToEdit.username}</h3>
+            <img src={newUser ? userAvatar : userToEdit.photoURL} id="profile-clicked-pic" alt="Profile Pic" />
             <form id="edit-user-form">
                 <label className="labels-edit-profile" id="username-editProfile-label" hidden={newUser ? false : true}>Username</label>
                 <input type="text" className="editUser-fields" id="username-editUser" name="username" placeholder={newUser ? "Username" : ''} onChange={handleInputs} value={username} hidden={newUser ? false : true}/>
@@ -275,15 +348,15 @@ export function UserDetails () {
                 <label className="labels-edit-profile" id="confirmPassword-editProfile-label" hidden={newUser ? false : true}>Confirm Password</label>
                 <input type="password" className="editUser-fields" id="confirmPassword-editUser" name="confirmPassword" placeholder={newUser ? "Confirm Password" : ''} onChange={handleInputs} value={confirmPassword} hidden={newUser ? false : true}/>
                 <label className="labels-edit-profile" id="email-editProfile-label" >Email</label>
-                <input type="email" className="editUser-fields" id="email-editUser" name="email" placeholder={newUser ? "Email" : userToEditData.email} onChange={handleInputs} value={email}/>
+                <input type="email" className="editUser-fields" id="email-editUser" name="email" placeholder={newUser ? "Email" : userToEdit.email} onChange={handleInputs} value={email}/>
                 <label className="labels-edit-profile" id="first name-editProfile-label">First Name</label>
-                <input type="text" className="editUser-fields" id="first name-editUser" name="first name" placeholder={newUser ? "First Name" : userToEditData.firstName} onChange={handleInputs} value={firstName}/>
+                <input type="text" className="editUser-fields" id="first name-editUser" name="first name" placeholder={newUser ? "First Name" : userToEdit.firstName} onChange={handleInputs} value={firstName}/>
                 <label className="labels-edit-profile" id="last name-editProfile-label">Last Name</label>
-                <input type="text" className="editUser-fields" id="last name-editUser" name="last name" placeholder={newUser ? "Last Name" : userToEditData.lastName} onChange={handleInputs} value={lastName}/>
+                <input type="text" className="editUser-fields" id="last name-editUser" name="last name" placeholder={newUser ? "Last Name" : userToEdit.lastName} onChange={handleInputs} value={lastName}/>
                 <label className="labels-edit-profile" id="phone-editProfile-label">Phone</label>
-                <input type="text" className="editUser-fields" id="phone-editUser" name="phone" placeholder={newUser ? "Phone" : userToEditData.phone} onChange={handleInputs} value={phone}/>
+                <input type="text" className="editUser-fields" id="phone-editUser" name="phone" placeholder={newUser ? "Phone" : userToEdit.phone} onChange={handleInputs} value={phone}/>
                 <label className="labels-edit-profile" id="photo url-editProfile-label">Photo URL</label>
-                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? userAvatar : userToEditData.photoURL} onChange={handlePhotoUrlAndInputChange} /* value={newUser ? userAvatar : userToEditData.photoURL} *//>
+                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? userAvatar : userToEdit.photoURL} onChange={handlePhotoUrlAndInputChange} value={newUser ? userAvatar : userToEdit.photoURL} />
                 <select id="select_role" name="role" onChange={handleInputs} value={role}>
                     <option disabled="" value="" id="user_role_loaded" ></option>
                     <option value="100" id="Developer" selected={userToEdit.typeOfUser === DEVELOPER}>Developer</option>

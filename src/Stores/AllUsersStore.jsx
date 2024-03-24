@@ -23,7 +23,7 @@ export const AllUsersStore = create(
             updateUser: (updatedUser) => {
                 set((state) => ({
                     users: state.users.map((user) => {
-                        if (user.id === updatedUser.id) {
+                        if (user.username === updatedUser.username) {
                             return updatedUser;
                         }
                         return user;
