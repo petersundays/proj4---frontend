@@ -21,28 +21,11 @@ function UsersContainer() {
     const [users, setUsers] = useState(AllUsersStore.getState().users);
     const [selectedUser, setSelectedUser] = useState(AllUsersStore.getState().selectedUser);
     const [userType, setUserType] = useState(AllUsersStore.getState().userType);
-    const [userTasks, setUserTasks] = useState(undefined); 
 
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
     const message = "Are you sure you want to delete this category?";
 
-   /*  useEffect(() => {
-        async function fetchUsers() {
-            if (selectedUser === '') {
-                users.map(async user => {
-                    const tasks = await getTasksFromUser(user.username, token);
-                    console.log('tasks:', tasks.length);
-                    setUserTasks(tasks.length);
-                });
-            } else {
-                const tasks = await getTasksFromUser(selectedUser, token);
-                setUserTasks(tasks.length);
-            }
-            
-            
-        }
-        fetchUsers();
-    }, [selectedUser]); */
+   
     
     useEffect(() => {
         AllUsersStore.getState().setUserType(userType);
@@ -59,21 +42,15 @@ function UsersContainer() {
     }, []);
 
 
-    const getNumberOfTasks = async (username) => {
-        const tasks = await getTasksFromUser(username, token);
-        return tasks.length;
-    }
-
-
-
-    // Chamar de cada vez que se clicar numa linha da tabela
-    const showProfileDetails = () => {
-        if (newUser) {
-            setNewUser(false);
-            AllUsersStore.getState().setNewUser(false);
-        }
+    const handleRowClick = (user) => {
+        setNewUser(false);
+        AllUsersStore.getState().setNewUser(false);
+        AllUsersStore.getState().setUserToEdit(user);
         setDisplayContainer(true);
+        AllUsersStore.getState().setDisplayContainer(true);
     }
+    
+
     const handleDisplayConfirmationModal = () => {
         setDisplayConfirmationModal(!displayConfirmationModal);
     }
@@ -92,12 +69,7 @@ function UsersContainer() {
     }
 
     const getUsersToDisplay = () => {
-        let filteredUsers = users;
-
-        /* console.log('users:', users);
-        console.log('selectedUser:', selectedUser);
-        console.log('userType:', userType);
-         */
+        let filteredUsers = users;      
     
         if (selectedUser !== '') {
             filteredUsers = filteredUsers.filter(user => user.username === selectedUser);
@@ -108,7 +80,7 @@ function UsersContainer() {
         }
     
         return filteredUsers.map(user => (
-            <tr key={user.username}>
+            <tr key={user.username} onClick={() => handleRowClick(user)}>
                 <td><img src={user.photoURL} alt="" /></td>
                 <td>{user.username}</td>
                 <td>{user.firstName}</td>
@@ -151,7 +123,7 @@ function UsersContainer() {
                         </table>
                     </div>
                 </div>
-                { <UserDetails displayContainer={displayContainer} /> }
+                { <UserDetails /> }
             </main>
         </>
     )
