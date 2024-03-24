@@ -26,13 +26,23 @@ function UsersContainer() {
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
     const message = "Are you sure you want to delete this category?";
 
-    useEffect(() => {
+   /*  useEffect(() => {
         async function fetchUsers() {
-            const tasks = await getTasksFromUser(selectedUser.username, token);
-            setUserTasks(tasks.length);
+            if (selectedUser === '') {
+                users.map(async user => {
+                    const tasks = await getTasksFromUser(user.username, token);
+                    console.log('tasks:', tasks.length);
+                    setUserTasks(tasks.length);
+                });
+            } else {
+                const tasks = await getTasksFromUser(selectedUser, token);
+                setUserTasks(tasks.length);
+            }
+            
+            
         }
         fetchUsers();
-    }, [selectedUser]);
+    }, [selectedUser]); */
     
     useEffect(() => {
         AllUsersStore.getState().setUserType(userType);
@@ -45,11 +55,14 @@ function UsersContainer() {
             setNewUser(state.newUser);
         });
     
-        // Unsubscribe when the component unmounts
         return () => unsubscribe();
     }, []);
 
 
+    const getNumberOfTasks = async (username) => {
+        const tasks = await getTasksFromUser(username, token);
+        return tasks.length;
+    }
 
 
 
@@ -102,7 +115,7 @@ function UsersContainer() {
                 <td>{user.lastName}</td>
                 <td>{user.email}</td>
                 <td>{convertTypeOfUserToString(user.typeOfUser)}</td>
-                <td>{userTasks}</td>
+                <td>{user.numberOfTasks}</td>
                 <td>
                     <div className='buttons-container'>
                         <img src={user.erased ? '../../../multimedia/hide.png' : '../../../multimedia/show.png'} id="hide-show" onClick={handleDisplayConfirmationModal} />
