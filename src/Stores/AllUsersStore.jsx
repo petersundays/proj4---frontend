@@ -9,6 +9,7 @@ export const AllUsersStore = create(
             newUser: false,
             selectedUser: '',
             userType: '',
+            userToEdit: {},
             addUser: (user) => {
                 set((state) => ({
                     users: [...state.users, user],
@@ -40,6 +41,9 @@ export const AllUsersStore = create(
             },
             setUserType: (value) => {
                 set({ userType: value });
+            },
+            setUserToEdit: (value) => {
+                set({ userToEdit: value });
             },
         }),
         {

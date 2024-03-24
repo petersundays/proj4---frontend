@@ -19,47 +19,15 @@ function AsideUsers() {
     const [newUser, setNewUser] = useState('false');
     const [displayContainer, setDisplayContainer] = useState(AllUsersStore.getState().displayContainer); 
 
-
-    const handleNewUser = () => {
-        setNewUser('true');
-        AllUsersStore.getState().setNewUser(true);
-        setDisplayContainer(true);
-        AllUsersStore.getState().setDisplayContainer(true);
-    }
-
     useEffect(() => {
         getAllUsersFromServer(); 
-        AllUsersStore.subscribe((state) => {
+        const unsubscribe = AllUsersStore.subscribe((state) => {
             setUsers(state.users);
         });
+
+        
+        return () => unsubscribe();
     }, [selectedUser, userType]);
-
-    useEffect(() => {
-        if (selectedUser !== '') {
-            setUserType('');
-        }
-    }, [selectedUser]);
-
-    useEffect(() => {
-        setSelectedUser('');
-        AllUsersStore.getState().setSelectedUser('');
-    }, []);
-
-    useEffect(() => {
-    AllUsersStore.getState().setUserType(userType);
-}, [userType]);
-
-useEffect(() => {
-    const unsubscribe = AllUsersStore.subscribe((state) => {
-        setUsers(state.users);
-        setSelectedUser(state.selectedUser);
-        setUserType(state.userType);
-        setDisplayContainer(state.displayContainer);
-    });
-
-    // Unsubscribe when the component unmounts
-    return () => unsubscribe();
-}, []);
 
     const getAllUsersFromServer = async () => {
         try {
@@ -86,16 +54,14 @@ useEffect(() => {
         }
     }
 
-    const handleUserChange = async (e) => {
+    const handleUserChange = (e) => {
         setSelectedUser(e.target.value);
-        console.log('SET SELECTED USER ', selectedUser);
+        setUserType(''); 
         AllUsersStore.getState().setSelectedUser(e.target.value);
-        setUserType('');
     }
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);        
-        console.log('SET USER TYPE ', userType);
         if (e.target.value !== '') {
             setSelectedUser('');
             AllUsersStore.getState().setSelectedUser('');
@@ -116,7 +82,12 @@ useEffect(() => {
         }
     }
 
-      
+    const handleNewUser = () => {
+        setNewUser('true');
+        AllUsersStore.getState().setNewUser(true);
+        setDisplayContainer(true);
+        AllUsersStore.getState().setDisplayContainer(true);
+    }
 
     return ( 
         <>
@@ -137,7 +108,7 @@ useEffect(() => {
                         <option value={SCRUM_MASTER} >Scrum Master</option>
                         <option value={PRODUCT_OWNER} >Product Owner</option>
                     </select>
-                        <Button text="Register New User" width="180px" onClick={handleNewUser} ></Button>
+                    <Button text="Register New User" width="180px" onClick={handleNewUser} ></Button>
                 </div>
             </aside>
         </>
