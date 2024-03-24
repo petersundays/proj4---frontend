@@ -6,6 +6,9 @@ import { AllUsersStore } from '../../../Stores/AllUsersStore';
 import { ConfirmationModal } from '../../General/ConfirmationModal';
 import { UserDetails } from './UserDetails';
 import { getTasksFromUser } from '../../../functions/Tasks/GetTasksFromUser.js';
+import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage.js';
+import { showErrorMessage } from '../../../functions/Messages/ErrorMessage.js';
+import { getUserByUsername } from '../../../functions/Users/GetUserByUsername.js';
 
 
 function UsersContainer() {
@@ -90,7 +93,7 @@ function UsersContainer() {
                 <td>{user.numberOfTasks}</td>
                 <td>
                     <div className='buttons-container'>
-                        <img src={user.erased ? '../../../multimedia/hide.png' : '../../../multimedia/show.png'} id="hide-show" onClick={handleDisplayConfirmationModal} />
+                        <img src={user.erased ? '../../../multimedia/hide.png' : '../../../multimedia/show.png'} id="hide-show" onClick={(e) => handleVisibilityButton(e, user)} />
                         <img src='../../../multimedia/deleteUser.png' id="hide-show" hidden={user.erased ? false : true} onClick={handleDisplayConfirmationModal} />
                     </div>
                 </td>
@@ -98,16 +101,51 @@ function UsersContainer() {
         ));
     }
 
+    const handleVisibilityButton = async (e, user) => {
+        e.stopPropagation();
+        changeVisibilityOfUser(user);
+    }
 
-   /*  const changeVisibilityOfUser = async (user) => {
+    const changeVisibilityOfUser = async (user) => {
 
+        console.log('User before update', user);
+        
         const username = user.username;
 
-        const changeVisibility = 
- */
+        const changeVisibility = `http://localhost:8080/backend_proj4_war_exploded/rest/users/update/${username}/visibility`;
+
+        try {
+            const response = await fetch(changeVisibility, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                    token: token
+                }
+            });
+
+            if (response.ok) {
+                const feedback = await response.text();
+                const updatedUser = await getUserByUsername(username, token);
+                showSuccessMessage(feedback);
+                AllUsersStore.getState().updateUser(updatedUser);
+
+                console.log('User visibility changed');
+                console.log('User after update', user);
+            } else {
+                console.log('Error', response.status);
+                showErrorMessage("Failed to change user's visibility. Please try again later.");
+            }
+        }
+        catch (error) {
+            console.log(error);
+            showErrorMessage("Failed to change user's visibility. Please try again later.");
+        }
+    }
+ 
     return (
         <>
-            <ConfirmationModal /* onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message} displayModal={displayConfirmationModal} */ />
+            <ConfirmationModal /* onConfirm={handleDeleteCategory} onCancel={handleDisplayConfirmationModal} message={message}*/ displayModal={displayConfirmationModal}  />
             <main className="main-users">
                 <div className="details-editProfile">
                     <div className="container-table">
@@ -130,7 +168,7 @@ function UsersContainer() {
                         </table>
                     </div>
                 </div>
-                { <UserDetails /> }
+                { displayContainer && <UserDetails /> }
             </main>
         </>
     )
