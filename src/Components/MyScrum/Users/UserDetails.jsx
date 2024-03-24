@@ -8,16 +8,20 @@ import userAvatar from '../../../../multimedia/user-avatar.jpg';
 import { showInfoMessage } from '../../../functions/Messages/InfoMessage';
 import { UserStore } from '../../../Stores/UserStore';
 import { showSuccessMessage } from '../../../functions/Messages/SuccessMessage';
+import { getUserByUsername } from '../../../functions/Users/GetUserByUsername';
 
 export function UserDetails () {
 
     const [displayContainer, setDisplayContainer] = useState(AllUsersStore.getState().displayContainer); 
     const [newUser, setNewUser] = useState(AllUsersStore.getState().newUser);
+    const token = UserStore.getState().user.token;
+    const usernameToEdit = AllUsersStore.getState().userToEdit;
 
     const DEVELOPER = 100;
     const SCRUM_MASTER = 200;
     const PRODUCT_OWNER = 300;
 
+    const [userToEdit, setUserToEdit] = useState({});
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,8 +31,8 @@ export function UserDetails () {
     const [phone, setPhone] = useState('');
     const [photoUrl, setPhotoUrl] = useState('');
     const [role, setRole] = useState(undefined);
-
-    const userToEdit = AllUsersStore.getState().userToEdit;
+    
+    // const userToEdit = AllUsersStore.getState().userToEdit;
    
 /*     const userToEditData = {
         username: userToEdit.username,
@@ -41,15 +45,20 @@ export function UserDetails () {
     } */
 
     useEffect(() => {
+        getUserToEdit();
+
         const unsubscribe = AllUsersStore.subscribe((state) => {
             setDisplayContainer(state.displayContainer);
             setNewUser(state.newUser);
-        });
-
-        setRole(userToEdit.typeOfUser);
+          });
         
         return () => unsubscribe();
     }, [userToEdit]);
+
+    const getUserToEdit = async () => {
+        const user = await getUserByUsername(token, usernameToEdit);
+        setUserToEdit(user);
+    }
 
     const handleInputs = (e) => {
         const { name, value } = e.target;
@@ -152,49 +161,6 @@ export function UserDetails () {
         return updatedUser;
     };
 
-    /* const updateUserToRender = (user) => {
-
-        console.log('User to render: ', user);
-        console.log('User to edit: ', userToEditData);
-        
-        const userToRender = {};
-        userToRender.username = userToEditData.username;
-
-        if (user.email) {
-            userToRender.email = user.email;
-        } else {
-            userToRender.email = userToEditData.email;
-        }
-        if (user.firstName) {
-            userToRender.firstName = user.firstName;
-        } else {
-            userToRender.firstName = userToEditData.firstName;
-        }
-        if (user.lastName) {
-            userToRender.lastName = user.lastName;
-        } else {
-            userToRender.lastName = userToEditData.lastName;
-        }
-        if (user.phone) {
-            userToRender.phone = user.phone;
-        } else {
-            userToRender.phone = userToEditData.phone;
-        }
-        if (user.photoURL) {
-            userToRender.photoURL = user.photoURL;
-        } else {
-            userToRender.photoURL = userToEditData.photoURL;
-        }
-        if (user.typeOfUser) {
-            userToRender.typeOfUser = user.typeOfUser;
-        } else {
-            userToRender.typeOfUser = userToEditData.typeOfUser;
-        }
-
-        return userToRender;
-
-
-    } */
 
     const updateUserToEdit = (user) => {
 
