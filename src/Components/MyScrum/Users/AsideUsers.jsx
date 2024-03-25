@@ -108,7 +108,7 @@ function AsideUsers() {
                         <option value={SCRUM_MASTER} >Scrum Master</option>
                         <option value={PRODUCT_OWNER} >Product Owner</option>
                     </select>
-                    <Button text="Register New User" width="180px" onClick={handleNewUser} ></Button>
+                    <Button text="Register New User" width="180px" onClick={handleNewUser} hidden={userType===SCRUM_MASTER}></Button>
                 </div>
             </aside>
         </>
