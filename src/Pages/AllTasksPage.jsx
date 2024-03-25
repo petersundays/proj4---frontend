@@ -2,11 +2,17 @@ import AsideAllTasks from "../Components/MyScrum/Tasks/AsideAllTasks";
 import AsideAddTask from "../Components/MyScrum/Tasks/AsideAddTask";
 import AllTasks from "../Components/MyScrum/Tasks/AllTasks";
 import { UserStore } from "../Stores/UserStore";
+import { useNavigate } from "react-router-dom";
 
 
 function AllTasksPage() {
-    const typeOfUser = UserStore.getState().user.typeOfUser;
-    const DEVELOPER = 100;
+
+    const user = UserStore.getState().user; 
+    const navigate = useNavigate();
+
+    if (!user) {
+        navigate('/');
+    } 
 
     const asideToRender = () => {
         if (typeOfUser === DEVELOPER) {

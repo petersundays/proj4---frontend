@@ -102,8 +102,8 @@ function AsideUsers() {
                         {createSelectOptions()} 
                     </select>
                     <div className="spacebetween-users"></div>
-                    <label className="labels-user-role" id="label-user-role"> Search by role</label>
-                    <select id="user-type" value={userType} onChange={handleUserTypeChange} required>
+                    <label className="labels-user-role" id="label-user-role" hidden={true}> Search by role</label>
+                    <select id="user-type" value={userType} onChange={handleUserTypeChange} hidden={true} required>
                         <option value="" >All</option>
                         <option value={DEVELOPER} >Developer</option>
                         <option value={SCRUM_MASTER} >Scrum Master</option>

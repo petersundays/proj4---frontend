@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import '../Components/MyScrum/Main/MainPage.css';
 import BaseHeader from '../Components/MyScrum/Main/baseHeader';
 import Footer from '../Components/MyScrum/Main/Footer';
@@ -9,8 +9,16 @@ import AllTasksPage from './AllTasksPage';
 import EditProfilePage from './EditProfilePage';
 import EditTaskPage from './EditTaskPage';
 import UsersPage from './UsersPage';
+import { UserStore } from '../Stores/UserStore';
 
 function MainPage() {
+    const user = UserStore.getState().user; 
+    const navigate = useNavigate();
+
+    if (!user) {
+        navigate('/');
+    } 
+
     return (
         <>
             <BaseHeader />

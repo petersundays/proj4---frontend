@@ -7,6 +7,9 @@ import { CategoriesStore } from '../../../Stores/CategoriesStore';
 import { useNavigate } from 'react-router-dom';
 import { AllTasksStore } from '../../../Stores/AllTasksStore';
 import { showInfoMessage } from '../../../functions/Messages/InfoMessage';
+import { AllUsersStore } from '../../../Stores/AllUsersStore';
+import { TasksByCategoryStore } from '../../../Stores/TasksByCategoryStore';
+import { TasksByUserStore } from '../../../Stores/TasksByUserStore';
 
 
 function BaseHeader() {
@@ -41,6 +44,13 @@ function BaseHeader() {
         MyTasksStore.setState({ tasks: [] });
         CategoriesStore.setState({ categories: [] });
         AllTasksStore.setState({ tasks: [] });
+        AllUsersStore.setState({ users: [] });
+        AllUsersStore.setState({ selectedUser: "" });
+        AllUsersStore.setState({ userType: "" });
+        AllUsersStore.setState({ newUser: false });
+        AllUsersStore.setState({ displayContainer: false });
+        TasksByCategoryStore.setState({ tasks: [] });
+        TasksByUserStore.setState({ tasks: [] });
 
         const logout = "http://localhost:8080/backend_proj4_war_exploded/rest/users/logout";
         try {
