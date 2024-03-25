@@ -18,6 +18,7 @@ function AsideUsers() {
     const [userType, setUserType] = useState(''); 
     const [newUser, setNewUser] = useState('false');
     const [displayContainer, setDisplayContainer] = useState(AllUsersStore.getState().displayContainer); 
+    const userLoggedType = UserStore.getState().user.typeOfUser;
 
     useEffect(() => {
         getAllUsersFromServer(); 
@@ -108,7 +109,7 @@ function AsideUsers() {
                         <option value={SCRUM_MASTER} >Scrum Master</option>
                         <option value={PRODUCT_OWNER} >Product Owner</option>
                     </select>
-                    <Button text="Register New User" width="180px" onClick={handleNewUser} hidden={userType===SCRUM_MASTER}></Button>
+                    <Button text="Register New User" width="180px" onClick={handleNewUser} hidden={userLoggedType!==PRODUCT_OWNER}></Button>
                 </div>
             </aside>
         </>

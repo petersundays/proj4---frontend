@@ -16,6 +16,7 @@ export function UserDetails () {
     const [newUser, setNewUser] = useState(AllUsersStore.getState().newUser);
     const token = UserStore.getState().user.token;
     const usernameToEdit = AllUsersStore.getState().userToEdit;
+    const userLoggedType = UserStore.getState().user.typeOfUser;
 
     const DEVELOPER = 100;
     const SCRUM_MASTER = 200;
@@ -318,24 +319,24 @@ export function UserDetails () {
                 <label className="labels-edit-profile" id="confirmPassword-editProfile-label" hidden={newUser ? false : true}>Confirm Password</label>
                 <input type="password" className="editUser-fields" id="confirmPassword-editUser" name="confirmPassword" placeholder={newUser ? "Confirm Password" : ''} onChange={handleInputs} value={confirmPassword} hidden={newUser ? false : true}/>
                 <label className="labels-edit-profile" id="email-editProfile-label" >Email</label>
-                <input type="email" className="editUser-fields" id="email-editUser" name="email" placeholder={newUser ? "Email" : userToEdit.email} onChange={handleInputs} value={email}/>
+                <input type="email" className="editUser-fields" id="email-editUser" name="email" placeholder={newUser ? "Email" : userToEdit.email} onChange={handleInputs} value={email} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}/>
                 <label className="labels-edit-profile" id="first name-editProfile-label">First Name</label>
-                <input type="text" className="editUser-fields" id="first name-editUser" name="first name" placeholder={newUser ? "First Name" : userToEdit.firstName} onChange={handleInputs} value={firstName}/>
+                <input type="text" className="editUser-fields" id="first name-editUser" name="first name" placeholder={newUser ? "First Name" : userToEdit.firstName} onChange={handleInputs} value={firstName} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}/>
                 <label className="labels-edit-profile" id="last name-editProfile-label">Last Name</label>
-                <input type="text" className="editUser-fields" id="last name-editUser" name="last name" placeholder={newUser ? "Last Name" : userToEdit.lastName} onChange={handleInputs} value={lastName}/>
+                <input type="text" className="editUser-fields" id="last name-editUser" name="last name" placeholder={newUser ? "Last Name" : userToEdit.lastName} onChange={handleInputs} value={lastName} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}/>
                 <label className="labels-edit-profile" id="phone-editProfile-label">Phone</label>
-                <input type="text" className="editUser-fields" id="phone-editUser" name="phone" placeholder={newUser ? "Phone" : userToEdit.phone} onChange={handleInputs} value={phone}/>
+                <input type="text" className="editUser-fields" id="phone-editUser" name="phone" placeholder={newUser ? "Phone" : userToEdit.phone} onChange={handleInputs} value={phone} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}/>
                 <label className="labels-edit-profile" id="photo url-editProfile-label">Photo URL</label>
-                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? "photoUrl" : userToEdit.photoURL} onChange={handlePhotoUrlAndInputChange} value={newUser ? photoUrl : userToEdit.photoURL} />
-                <select id="select_role" name="role" onChange={handleInputs} value={role}>
+                <input type="url" className="editUser-fields" id="photo url-editUser" name="photo url" placeholder={newUser ? "photoUrl" : userToEdit.photoURL} onChange={handlePhotoUrlAndInputChange} value={newUser ? "" : userToEdit.photoURL} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER} />
+                <select id="select_role" name="role" onChange={handleInputs} value={role} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}>
                     <option disabled="" value="undefined" id="user_role_loaded" ></option>
-                    <option value="100" id="Developer" selected={userToEdit.typeOfUser === DEVELOPER}>Developer</option>
-                    <option value="200" id="Scrum Master" selected={userToEdit.typeOfUser === SCRUM_MASTER}>Scrum Master</option>
-                    <option value="300" id="Product Owner" selected={userToEdit.typeOfUser === PRODUCT_OWNER}>Product Owner</option>
+                    <option value="100" id="Developer" selected={userToEdit.typeOfUser === DEVELOPER} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}>Developer</option>
+                    <option value="200" id="Scrum Master" selected={userToEdit.typeOfUser === SCRUM_MASTER} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}>Scrum Master</option>
+                    <option value="300" id="Product Owner" selected={userToEdit.typeOfUser === PRODUCT_OWNER} readOnly={!newUser && userLoggedType !== PRODUCT_OWNER}>Product Owner</option>
                 </select>
                 <div className='buttons-container'>
-                    <Button width="94px" marginRight= '5px' text="Save" onClick={handleSaveButton}/>
-                    <Button width="94px" marginLeft= '5px' text="Cancel" onClick={handleCancelButton}/>
+                    <Button width="94px" marginRight= '5px' text="Save" onClick={handleSaveButton} hidden={!newUser && userLoggedType !== PRODUCT_OWNER}/>
+                    <Button width="94px" marginLeft= '5px' text="Cancel" onClick={handleCancelButton} hidden={!newUser && userLoggedType !== PRODUCT_OWNER}/>
 
                 </div>
             </form>
